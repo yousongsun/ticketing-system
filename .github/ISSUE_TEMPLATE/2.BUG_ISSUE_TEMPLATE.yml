@@ -1,0 +1,68 @@
+name: 🐞 Bug Report
+description: Report bugs, missing documentation, or unexpected system behavior. 🤔
+labels: "🚦 status: awaiting triage"
+type: Bug
+body:
+  - type: checkboxes
+    id: duplicates
+    attributes:
+      label: Is this issue already reported?
+      description: Ensure your issue hasn't already been raised to increase the likelihood of swift resolution.
+      options:
+        - label: I've checked both "open" and "closed" issues and this is not a duplicate
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a clear and concise description of the bug you encountered. Include any relevant details, such as steps to reproduce or expected vs. actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Help us reproduce the issue by providing the exact sequence of steps that lead to the bug. If unsure, try to give any details you remember that may be useful.
+
+        **If you're able to recreate the bug, please list the steps below:**
+
+        If you're unsure of the exact steps, provide as many details as you can, such as:
+
+        - The page you were on
+        - The action you were trying to perform
+        - What went wrong during the process
+        - The browser you were using, including its version, operating system, and screen resolution
+      value:  | 
+        1. Navigate to <the bug page>.
+        2. On top right side, close to the <Account> menu.
+        3. Notice some menu items are unresponsive.
+        4. I used the <Chrome> browser, version <134.0.6998.165> on a <Windows 11> machine with a resolution of <1920x1080>.
+        5. Continue...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: please attach any screenshots or screen recordings that could help us understand the issue better
+    validations:
+      required: false
+  - type: dropdown
+    id: assignee
+    attributes:
+      label: Would you like to work on this issue?
+      multiple: false
+      options:
+        - "No"
+        - "Yes"
+      default: 0
+    validations:
+      required: false
+  - type: textarea
+    id: extrainfo
+    attributes:
+      label: If "Yes" above, how would you approach fixing this?
+      description: If you’re interested in resolving the issue, explain your proposed solution or any code references you think would be helpful.
+    validations:
+      required: false

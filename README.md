@@ -1,10 +1,11 @@
 # Med Revue Hub
 
-A modern web platform to support Med Revue – an annual theater show put together by medical students, with all proceeds going to charity. 
+A modern web platform to support Med Revue – an annual theater show put together by medical students, with all proceeds going to charity.
 
 ## 🎭 Overview
 
 Med Revue Hub is designed to:
+
 - 📅 Promote upcoming show details and events
 - 🎟️ Allow users to order tickets online
 - 🖼️ Display galleries from past performances
@@ -12,3 +13,7 @@ Med Revue Hub is designed to:
 - 🎉 Showcase sponsors and supporters
 
 ## 🔧 Getting Started
+
+- npm install
+- npm run dev:frontend
+- npm run dev:backend
