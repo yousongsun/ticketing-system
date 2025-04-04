@@ -23,7 +23,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 
 app.get('/', (_: Request, res: Response): void => {
-  res.send('Meow Meow Silly Studio!');
+  res.send('Med Revue Hub!');
 });
 
 // Start the Express server and allow external access

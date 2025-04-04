@@ -1,12 +1,12 @@
 {
   "name": "medrevue",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:frontend": "npm run dev -workspace @mmss/frontend",
-    "dev:backend": "cd packages/backend && npm run dev",
+    "dev:frontend": "npm run dev -workspace @medrevue/frontend",
+    "dev:backend": "npm run dev -workspace @medrevue/backend",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
