@@ -9,7 +9,8 @@
     "dev:backend": "npm run dev -workspace @medrevue/backend",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "storybook": "npm run storybook -workspace @medrevue/frontend"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

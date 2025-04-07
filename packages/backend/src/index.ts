@@ -22,7 +22,7 @@ app.use(express.json({ limit: '50mb' }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-app.get('/', (_: Request, res: Response): void => {
+app.get('/', (_req: Request, res: Response): void => {
   res.send('Med Revue Hub!');
 });
 
