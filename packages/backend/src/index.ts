@@ -1,6 +1,8 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import express, { type Express, type Request, type Response } from 'express';
+
 import cors from 'cors';
+import dotenv from 'dotenv';
+import routes from './routes/routes';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -22,9 +24,11 @@ app.use(express.json({ limit: '50mb' }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-app.get('/', (_: Request, res: Response): void => {
-  res.send('Meow Meow Silly Studio!');
-});
+// app.get('/', (_req: Request, res: Response): void => {
+//   res.send('Med Revue Hub!');
+// });
+
+app.use('/', routes);
 
 // Start the Express server and allow external access
 app.listen(PORT, '0.0.0.0', () => {

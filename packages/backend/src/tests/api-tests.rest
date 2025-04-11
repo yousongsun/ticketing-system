@@ -1,0 +1,6 @@
+@baseUrl = http://localhost:3000/api/v1
+
+# @title Test API
+# @description This is a test API endpoint to check the server's response.
+GET {{baseUrl}}/tests/hello
+Content-Type: application/json
