@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:3000/api/v1
+
+# @title User Registration Test 
+# @description This is a test API endpoint to create a new user. 
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+    "username": "John Doe",
+    "email" : "johndoe@acme.com",
+    "password": "password"
+}
