@@ -93,4 +93,28 @@ router.post('/create-order', (req: CreateOrderRequest, res: Response): void => {
     });
 });
 
+router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
+  const { orderID } = req.body;
+  // The user does not provide a order id on the route
+  if (!orderID) {
+    res.status(400).json({
+      error: 'Missing the order id',
+    });
+    return;
+  }
+  // Find the order in the DB
+  const order = await Order.findById(orderID);
+  // If the order exists return the information
+  if (order) {
+    res.status(200).json({
+      order,
+    });
+    return;
+  }
+  // If the order doesn't exist, exit on 404
+  res.status(404).json({
+    error: 'Server could not find order provided',
+  });
+});
+
 export default router;
