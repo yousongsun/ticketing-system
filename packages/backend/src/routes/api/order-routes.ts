@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from 'express';
+import mongoose from 'mongoose';
 import Order from '../../models/order';
 
 const router = express.Router();
@@ -102,6 +103,14 @@ router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
     });
     return;
   }
+  // Check if valid id for mongoose
+  const isValidID = mongoose.Types.ObjectId.isValid(orderID);
+  if (!isValidID) {
+    res.status(400).json({
+      error: 'Incorrect orderID format',
+    });
+    return;
+  }
   // Find the order in the DB
   const order = await Order.findById(orderID);
   // If the order exists return the information
@@ -113,8 +122,41 @@ router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
   }
   // If the order doesn't exist, exit on 404
   res.status(404).json({
-    error: 'Server could not find order provided',
+    error: 'OrderID not in database',
   });
 });
+
+router.patch(
+  '/order-paid',
+  async (req: Request, res: Response): Promise<void> => {
+    const { orderID } = req.body;
+    if (!orderID) {
+      res.status(400).json({
+        error: 'Missing the order id',
+      });
+      return;
+    }
+    const isValidID = mongoose.Types.ObjectId.isValid(orderID);
+    if (!isValidID) {
+      res.status(400).json({
+        error: 'Incorrect orderID format',
+      });
+      return;
+    }
+    const filter = { _id: orderID };
+    const update = { paid: true };
+    const doc = await Order.findOneAndUpdate(filter, update, { new: true });
+
+    if (!doc) {
+      res.status(404).json({
+        error: 'OrderID not in database',
+      });
+      return;
+    }
+    res.status(200).json({
+      doc,
+    });
+  },
+);
 
 export default router;
