@@ -24,17 +24,12 @@ const userSchema: mongoose.Schema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required.'],
   },
-  salt: {
-    type: String,
-    required: [true, 'Password Salt is required.'],
-  },
 });
 
 interface UserDocument extends Document {
   username: string;
   email: string;
   password: string;
-  salt: string;
 }
 
 const User = mongoose.model<UserDocument>('User', userSchema);
@@ -72,13 +67,11 @@ router.post(
         username: userBody.username,
         email: userBody.email,
         password: hashedPassword,
-        salt: salt,
       });
 
       res.status(201).json({ id: user._id });
     } catch (error) {
-      //https://masteringjs.io/tutorials/mongoose/e11000-duplicate-key.
-      //there is a way to catch duplicate key errors by catching the e11000 error, however there are some problems with trying to access this, so i just left it as is for now
+      //there is a way to catch duplicate key errors by catching the e11000 error-- this involves checking if error is instanceof mongoose.mongo.MongoError however there are some problems with trying to access this, so i just left it as is for now
       res.status(500).send(error);
     }
   },
@@ -95,12 +88,12 @@ router.post('/login', async (_req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(
+    const comparePasswords = await bcrypt.compare(
       userBody.password,
-      emailExists.salt,
+      emailExists.password,
     );
 
-    if (hashedPassword !== emailExists.password) {
+    if (!comparePasswords) {
       res.status(400).send('Passwords do not match.');
       return;
     }
