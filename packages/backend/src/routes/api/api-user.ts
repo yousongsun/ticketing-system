@@ -71,7 +71,17 @@ router.post(
 
       res.status(201).json({ id: user._id });
     } catch (error) {
-      //there is a way to catch duplicate key errors by catching the e11000 error-- this involves checking if error is instanceof mongoose.mongo.MongoError however there are some problems with trying to access this, so i just left it as is for now
+      //NOTE: you may alternatively catch the mongoose server error for duplicate keys
+
+      // if (error instanceof mongoose.mongo.MongoServerError) {
+      //   res
+      //     .status(409)
+      //     .send(
+      //       `${Object.keys(error.keyValue)[0]} ${Object.values(error.keyValue)[0]} already exists.`,
+      //     );
+      //   return;
+      // }
+
       res.status(500).send(error);
     }
   },
