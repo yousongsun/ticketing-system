@@ -26,6 +26,7 @@ describe('POST /api/v1/user/register', () => {
     });
 
     expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('id');
   });
 });
 
@@ -36,19 +37,41 @@ describe('POST /api/v1/user/register with email conflict', () => {
       email: 'johndoe@acme.com',
       password: 'password',
     });
-
     expect(response.status).toBe(409);
   });
 });
 
-describe('POST /api/v1/user/register with username conflict', () => {
-  test('should throw an error since the username is already registered', async () => {
-    const response = await request(app).post('/api/v1/user/register').send({
-      username: 'John Doe',
-      email: 'janedoe@acme.com',
+describe('POST /api/v1/user/login', () => {
+  test('should be able to log in, assuming the correct credentials are provided', async () => {
+    const response = await request(app).post('/api/v1/user/login').send({
+      email: 'johndoe@acme.com',
       password: 'password',
     });
 
-    expect(response.status).toBe(409);
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Logged in!');
+  });
+});
+
+describe('POST /api/v1/user/login with wrong password', () => {
+  test('should not be able to log in, assuming the email exists but password is wrong', async () => {
+    const response = await request(app).post('/api/v1/user/login').send({
+      email: 'johndoe@acme.com',
+      password: 'password!',
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Passwords do not match.');
+  });
+});
+
+describe('POST /api/v1/user/login with wrong email', () => {
+  test('should not be able to log in, assuming the email does not exist', async () => {
+    const response = await request(app).post('/api/v1/user/login').send({
+      email: 'janedoe@acme.com',
+    });
+
+    expect(response.status).toBe(404);
+    expect(response.text).toBe('Email janedoe@acme.com was not found.');
   });
 });

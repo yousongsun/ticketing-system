@@ -7,6 +7,21 @@ Content-Type: application/json
 
 {
     "username": "John Doe",
+    "email": "johndoe@acme.com",
+    "password": "password"
+}
+
+###
+
+# @title User Login Test 
+# @description This is a test API endpoint to check if the login credentials are valid. 
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
     "email" : "johndoe@acme.com",
     "password": "password"
 }
+
+###
+
