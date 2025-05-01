@@ -1,15 +1,25 @@
-import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import express, { type Request, type Response } from 'express';
-import mongoose, { type Document, Mongoose, MongooseError } from 'mongoose';
-import { Schema } from 'mongoose';
-import type { T } from 'vitest/dist/chunks/environment.d.C8UItCbf';
+import mongoose, {
+  Schema,
+  model,
+  type Document,
+  Mongoose,
+  MongooseError,
+  type InferSchemaType,
+} from 'mongoose';
 
 const router = express.Router();
 
+interface UserDocument extends Document {
+  username: string;
+  email: string;
+  password: string;
+}
+
 //This is a temporary User model.
 
-const userSchema: mongoose.Schema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     unique: true,
@@ -26,19 +36,8 @@ const userSchema: mongoose.Schema = new mongoose.Schema({
   },
 });
 
-interface UserDocument extends Document {
-  username: string;
-  email: string;
-  password: string;
-}
-
-const User = mongoose.model<UserDocument>('User', userSchema);
-
-type User = {
-  username: string;
-  email: string;
-  password: string;
-};
+const User = model<UserDocument>('User', userSchema);
+type User = InferSchemaType<typeof userSchema>;
 
 type UserLogin = {
   email: string;
@@ -51,6 +50,7 @@ router.post(
     try {
       const userBody = _req.body as User;
 
+      //check if user exists
       const emailExists = await User.findOne({ email: userBody.email });
 
       if (emailExists) {
@@ -60,6 +60,7 @@ router.post(
         return;
       }
 
+      //generate salt and hash the password before storing
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(userBody.password, salt);
 
@@ -82,7 +83,7 @@ router.post(
       //   return;
       // }
 
-      res.status(500).send(error);
+      res.sendStatus(500);
     }
   },
 );
@@ -108,9 +109,9 @@ router.post('/login', async (_req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    res.status(200).send('Logged in!');
+    res.status(200).json({ id: emailExists._id });
   } catch (error) {
-    res.status(500).send(error);
+    res.sendStatus(500);
   }
 });
 

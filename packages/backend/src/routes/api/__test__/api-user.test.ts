@@ -49,7 +49,7 @@ describe('POST /api/v1/user/login', () => {
     });
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Logged in!');
+    expect(response.body).toHaveProperty('id');
   });
 });
 
