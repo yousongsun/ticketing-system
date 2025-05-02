@@ -8,14 +8,13 @@ const router = express.Router();
 router.post('/select', async (req: Request, res: Response): Promise<void> => {
   const { userId, seatNumber } = req.body;
 
-  // Validate input
+  // Validate user inputs
   if (!userId || !seatNumber) {
     res.status(400).json({ message: 'User ID and seat number are required.' });
     return;
   }
 
   try {
-    // Find the seat by seat number
     const seat = await Seat.findOne({ seatNumber });
 
     if (!seat) {
@@ -28,7 +27,7 @@ router.post('/select', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Reserve the seat
+    // Reserve the seat if available
     seat.reserved = true;
     seat.reservedBy = userId;
 
