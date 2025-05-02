@@ -1,43 +1,8 @@
 import bcrypt from 'bcrypt';
 import express, { type Request, type Response } from 'express';
-import mongoose, {
-  Schema,
-  model,
-  type Document,
-  Mongoose,
-  MongooseError,
-  type InferSchemaType,
-} from 'mongoose';
+import { User, type UserSchemaType } from '../../models/User';
 
 const router = express.Router();
-
-interface UserDocument extends Document {
-  username: string;
-  email: string;
-  password: string;
-}
-
-//This is a temporary User model.
-
-const userSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: [true, 'Username is required.'],
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, 'Email is required.'],
-  },
-  password: {
-    type: String,
-    required: [true, 'Password is required.'],
-  },
-});
-
-const User = model<UserDocument>('User', userSchema);
-type User = InferSchemaType<typeof userSchema>;
 
 type UserLogin = {
   email: string;
@@ -48,7 +13,7 @@ router.post(
   '/register',
   async (_req: Request, res: Response): Promise<void> => {
     try {
-      const userBody = _req.body as User;
+      const userBody = _req.body as UserSchemaType;
 
       //check if user exists
       const emailExists = await User.findOne({ email: userBody.email });
