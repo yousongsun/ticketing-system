@@ -1,22 +1,20 @@
 import bcrypt from 'bcrypt';
 import express, { type Request, type Response } from 'express';
-import { User, type UserSchemaType } from '../../models/User';
+import type { HydratedDocument } from 'mongoose';
+import { type IUser, type IUserLogin, User } from '../../models/User';
 
 const router = express.Router();
-
-type UserLogin = {
-  email: string;
-  password: string;
-};
 
 router.post(
   '/register',
   async (_req: Request, res: Response): Promise<void> => {
     try {
-      const userBody = _req.body as UserSchemaType;
+      const userBody = _req.body as IUser;
 
       //check if user exists
-      const emailExists = await User.findOne({ email: userBody.email });
+      const emailExists: HydratedDocument<IUser> | null = await User.findOne({
+        email: userBody.email,
+      });
 
       if (emailExists) {
         res
@@ -55,9 +53,11 @@ router.post(
 
 router.post('/login', async (_req: Request, res: Response): Promise<void> => {
   try {
-    const userBody = _req.body as UserLogin;
+    const userBody = _req.body as IUserLogin;
 
-    const emailExists = await User.findOne({ email: userBody.email });
+    const emailExists: HydratedDocument<IUser> | null = await User.findOne({
+      email: userBody.email,
+    });
 
     if (!emailExists) {
       res.status(404).send(`Email ${userBody.email} was not found.`);
