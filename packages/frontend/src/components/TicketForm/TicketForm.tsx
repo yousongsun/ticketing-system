@@ -25,7 +25,7 @@ const initialFormState: FormData = {
 };
 
 // State hooks
-const TicketForm: React.FC = () => {
+export const TicketForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormState);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
     {},
@@ -224,5 +224,3 @@ const TicketForm: React.FC = () => {
     </form>
   );
 };
-
-export default TicketForm;
