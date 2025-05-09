@@ -38,8 +38,8 @@ router.post('/select', async (req: Request, res: Response): Promise<void> => {
       seatNumber: seat.seatNumber,
       reservedBy: seat.reservedBy,
     });
-  } catch (err) {
-    console.error('Error reserving seat:', err);
+  } catch (error) {
+    console.error('Error reserving seat:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 });
