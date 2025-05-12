@@ -93,6 +93,21 @@ router.post(
 );
 
 router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
+  // Get order is a route which takes a orderID
+  // and returns the order information
+  // ------------------------------------
+  // ROUTE BODY:
+  // orderID (ObjectID): ID of the order
+  // ------------------------------------
+  // ROUTE RETURN:
+  // data: {
+  // orderID: ObjectID
+  // userID: ObjectID
+  // numberOfTickets: int
+  // seats: seats[]
+  // paid: boolean
+  // }
+  // ------------------------------------
   const { orderID } = req.body;
   // The user does not provide a order id on the route
   if (!orderID) {
@@ -127,6 +142,21 @@ router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
 router.patch(
   '/order-paid',
   async (req: Request, res: Response): Promise<void> => {
+    // Order paid is a route which takes a orderID
+    // and updates the order to paid
+    // ------------------------------------
+    // ROUTE BODY:
+    // orderID (ObjectID): ID of the order
+    // ------------------------------------
+    // ROUTE RETURN:
+    // data: {
+    // orderID: ObjectID
+    // userID: ObjectID
+    // numberOfTickets: int
+    // seats: seats[]
+    // paid: boolean
+    // }
+    // ------------------------------------
     const { orderID } = req.body;
     if (!orderID) {
       res.status(400).json({
