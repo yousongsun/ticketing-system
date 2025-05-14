@@ -7,4 +7,7 @@ const router: Router = express.Router();
 import testsRoutes from './api-tests';
 router.use('/tests', testsRoutes);
 
+import orderRoutes from './order-routes';
+router.use('/order', orderRoutes);
+
 export default router;
