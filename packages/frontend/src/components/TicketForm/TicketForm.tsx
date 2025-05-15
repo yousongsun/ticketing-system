@@ -57,7 +57,7 @@ export const TicketForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl mx-auto p-8 bg-transparent rounded-xl space-y-8 text-white"
+      className="max-w-lg mx-auto p-8 bg-transparent rounded-xl space-y-4 text-[#FFFBE8]"
     >
       <div className="flex gap-6">
         {/* First Name */}
@@ -67,11 +67,11 @@ export const TicketForm: React.FC = () => {
             name="firstName"
             value={firstName}
             onChange={handleChange}
-            className="w-full p-3 border border-white rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="w-full p-3 border border-[#FFFBE8] rounded bg-transparent placeholder-[#FFFBE8] placeholder:text-center focus:outline-none focus:ring-2 focus:ring-[#E5CE63]"
             placeholder="First name"
           />
           {errors.firstName && (
-            <p className="text-yellow-400 text-xs mt-1">{errors.firstName}</p>
+            <p className="text-[#E5CE63] text-xs mt-1">{errors.firstName}</p>
           )}
         </div>
 
@@ -82,11 +82,11 @@ export const TicketForm: React.FC = () => {
             name="lastName"
             value={lastName}
             onChange={handleChange}
-            className="w-full p-3 border border-white rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="w-full p-3 border border-[#FFFBE8] rounded bg-transparent placeholder-[#FFFBE8] placeholder:text-center focus:outline-none focus:ring-2 focus:ring-[#E5CE63]"
             placeholder="Last name"
           />
           {errors.lastName && (
-            <p className="text-yellow-400 text-xs mt-1">{errors.lastName}</p>
+            <p className="text-[#E5CE63] text-xs mt-1">{errors.lastName}</p>
           )}
         </div>
       </div>
@@ -99,11 +99,11 @@ export const TicketForm: React.FC = () => {
           type="email"
           value={email}
           onChange={handleChange}
-          className="w-full p-3 border border-white rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full p-3 border border-[#FFFBE8] rounded bg-transparent placeholder-[#FFFBE8] placeholder:text-center focus:outline-none focus:ring-2 focus:ring-[#E5CE63]"
           placeholder="Email"
         />
         {errors.email && (
-          <p className="text-yellow-400 text-xs mt-1">{errors.email}</p>
+          <p className="text-[#E5CE63] text-xs mt-1">{errors.email}</p>
         )}
       </div>
 
@@ -115,18 +115,18 @@ export const TicketForm: React.FC = () => {
           type="tel"
           value={phone}
           onChange={handleChange}
-          className="w-full p-3 border border-white rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full p-3 border border-[#FFFBE8] rounded bg-transparent placeholder-[#FFFBE8] placeholder:text-center focus:outline-none focus:ring-2 focus:ring-[#E5CE63]"
           placeholder="Phone"
         />
         {errors.phone && (
-          <p className="text-yellow-400 text-xs mt-1">{errors.phone}</p>
+          <p className="text-[#E5CE63] text-xs mt-1">{errors.phone}</p>
         )}
       </div>
 
       {/* Submit */}
       <button
         type="submit"
-        className="w-full py-3 rounded bg-yellow-500 text-black font-bold hover:bg-yellow-600 transition"
+        className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2]"
       >
         Submit
       </button>
