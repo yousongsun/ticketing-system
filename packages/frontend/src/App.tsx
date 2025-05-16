@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { decrement, increment } from './redux/slices/counterSlice';
 import type { AppDispatch, RootState } from './redux/store';
 
+import { SponsorPage } from './pages/SponsorPage';
+
 const App: React.FC = () => {
   const [buttonText, setButtonText] = useState('Click Me');
 
@@ -18,7 +20,7 @@ const App: React.FC = () => {
       <Routes>
         <Route
           path="/"
-          element={
+          element={ /*
             <Link to="/">
               <Button
                 onClick={() => setButtonText('Hello Auckland Med Revue!')}
@@ -33,7 +35,9 @@ const App: React.FC = () => {
                 Decrement
               </Button>
             </Link>
-          }
+            */
+           <SponsorPage />
+          } 
         />
       </Routes>
     </>
