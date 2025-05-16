@@ -17,14 +17,17 @@ const SQUISH_MAGNITUDE = 10;
 const SQUISH_OFFSET = 22;
 
 export const SeatPlanning: React.FC = () => {
-  const [seatData, setSeatData] = useState<SeatData>({});
+  const [seatData, setSeatData] = useState<SeatData>({}); // Holds current seat data
   const rowXOffsets: { [key: string]: number } = {};
 
   for (const row of SEATING_ARRANGEMENT.middle) {
     const rowLabel = row.label;
     const startSeat = row.startSeat;
     const endSeat = row.endSeat;
-    const totalSeats = endSeat - startSeat + 1;
+    let totalSeats = endSeat - startSeat + 1;
+    if (row.label === 'U' || row.label === 'T') {
+      totalSeats += 4;
+    }
 
     // The less seats in the center, the greater the offset
     const offset = (SQUISH_OFFSET - totalSeats - 1) * SQUISH_MAGNITUDE;
@@ -32,6 +35,7 @@ export const SeatPlanning: React.FC = () => {
     rowXOffsets[rowLabel] = offset;
   }
 
+  // Handles selecting of seats
   const onSeatSelect = (rowLabel: string, seatNumber: number) => {
     setSeatData((prev) => {
       const updatedRow = prev[rowLabel].map((seat) =>

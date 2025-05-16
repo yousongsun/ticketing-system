@@ -12,7 +12,17 @@ const SeatButton: React.FC<SeatButtonProps> = ({
   seat,
   onSeatSelect,
   yOffset,
+  isGap = false,
 }) => {
+  if (isGap) {
+    return (
+      <div
+        className="w-14 h-4 bg-transparent"
+        style={{ transform: yOffset ? `translateY(${yOffset}px)` : undefined }}
+      />
+    );
+  }
+
   const selectedClass = seat.selected
     ? 'bg-transparent border-2 border-red-500'
     : 'bg-transparent border-2 border-white';
