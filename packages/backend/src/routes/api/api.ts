@@ -7,7 +7,16 @@ const router: Router = express.Router();
 import testsRoutes from './api-tests';
 router.use('/tests', testsRoutes);
 
-import orderRoutes from './order-routes';
-router.use('/order', orderRoutes);
+// Import user route
+import usersRoutes from './api-users';
+router.use('/users', usersRoutes);
+
+// Import seat selection route
+import seatRoutes from './api-seats';
+router.use('/seats', seatRoutes);
+
+// Import order route
+import ordersRoutes from './api-orders';
+router.use('/order', ordersRoutes);
 
 export default router;
