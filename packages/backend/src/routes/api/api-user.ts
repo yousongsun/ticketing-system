@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import express, { type Request, type Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 import { type IUser, type IUserLogin, User } from '../../models/User';
@@ -23,9 +23,8 @@ router.post(
         return;
       }
 
-      //generate salt and hash the password before storing
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(userBody.password, salt);
+      //generate hashed password before storing
+      const hashedPassword = await argon2.hash(userBody.password);
 
       const user = await User.create({
         username: userBody.username,
@@ -64,9 +63,9 @@ router.post('/login', async (_req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const comparePasswords = await bcrypt.compare(
-      userBody.password,
+    const comparePasswords = await argon2.verify(
       emailExists.password,
+      userBody.password,
     );
 
     if (!comparePasswords) {
