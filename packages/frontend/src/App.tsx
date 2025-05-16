@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { decrement, increment } from './redux/slices/counterSlice';
 import type { AppDispatch, RootState } from './redux/store';
 
+import { SponsorPage } from './pages/SponsorPage';
+
 const App: React.FC = () => {
   const [buttonText, setButtonText] = useState('Click Me');
 
@@ -21,7 +23,7 @@ const App: React.FC = () => {
           path="/"
           element={
             <>
-              <Menu />
+              <Menu onBuyPage={false} />
               <h1>Home</h1>
             </>
           }
@@ -30,7 +32,7 @@ const App: React.FC = () => {
           path="show"
           element={
             <>
-              <Menu />
+              <Menu onBuyPage={false} />
               <h1>Show</h1>
             </>
           }
@@ -39,7 +41,7 @@ const App: React.FC = () => {
           path="gallery"
           element={
             <>
-              <Menu />
+              <Menu onBuyPage={false} />
               <h1>Gallery</h1>
             </>
           }
@@ -48,7 +50,7 @@ const App: React.FC = () => {
           path="about"
           element={
             <>
-              <Menu />
+              <Menu onBuyPage={false} />
               <h1>About</h1>
             </>
           }
@@ -74,10 +76,18 @@ const App: React.FC = () => {
             </>
           }
         />
+        <Route
+          path="sponsor"
+          element={
+            <>
+              <Menu onBuyPage={false} />
+              <SponsorPage />
+            </>
+          }
+        />
       </Routes>
     </>
   );
 };
 
 export default App;
-
