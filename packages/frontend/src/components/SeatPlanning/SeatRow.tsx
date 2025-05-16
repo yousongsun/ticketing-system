@@ -7,7 +7,7 @@ interface SeatRowProps {
   seats: Seat[];
   direction?: 'start' | 'center' | 'end';
   xOffset?: number;
-  onSeatSelect: (rowLabel: string, seatNumber: number) => void;
+  onSeatSelect: (seat: Seat) => void;
 }
 
 const ANGLE_OFFSET = 40;
@@ -55,9 +55,7 @@ const SeatRow: React.FC<SeatRowProps> = ({
                 (row.label === 'T' || row.label === 'U') &&
                 (seat.number === 20 || seat.number === 21)
               }
-              onSeatSelect={() =>
-                onSeatSelect(row.label, row.startSeat + reversedIndex)
-              }
+              onSeatSelect={() => onSeatSelect(seat)}
             />
           )
         );

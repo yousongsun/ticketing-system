@@ -13,12 +13,22 @@ const SeatSelectionPage: React.FC = () => {
       <img
         src={'./BackgroundBlur.svg'}
         alt="decorative blur"
-        className="w-full h-auto absolute top-0 left-0 pointer-events-none z-10"
+        className="w-full h-screen absolute top-0 left-0 pointer-events-none z-10"
         draggable="false"
       />
-      <div className="relative flex flex-row items-end justify-between h-full bg-[#070507] z-1 gap-x-8 p-4">
-        <div className="w-[60%] h-[90%] ">
-          <SeatPlanning />
+      <div className="relative flex flex-row items-center justify-between h-full bg-[#070507] z-1 gap-x-8 p-4">
+        <div className="w-[60%] h-auto flex items-center justify-center overflow-hidden">
+          <div
+            className="
+                      scale-45 
+                      sm:scale-50 
+                      md:scale-65 
+                      lg:scale-88 
+                      xl:scale-100
+                    "
+          >
+            <SeatPlanning />
+          </div>
         </div>
         <div className="w-[40%] h-[90%] flex  bg-[#070507] rounded-xl p-4 flex-col gap-y-4">
           <div>
@@ -44,7 +54,9 @@ const SeatSelectionPage: React.FC = () => {
                     key={seat.number}
                     className="text-lg text-white border-white border-3 w-full px-4 py-2 rounded-lg mb-2"
                   >
-                    Row: {seat.rowLabel} | Number: {seat.number}
+                    Row: {seat.rowLabel} | Number: {seat.number} | Type:{' '}
+                    {seat.seatType.charAt(0).toUpperCase() +
+                      seat.seatType.slice(1)}
                   </li>
                 ))}
               </ul>

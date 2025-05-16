@@ -44,57 +44,48 @@ export const SeatPlanning: React.FC = () => {
     rowXOffsets[rowLabel] = offset;
   }
 
-  const handleSelectSeat = (rowLabel: string, seatNumber: number) => {
-    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
-    if (seat) {
-      setSeatData((prev) => ({
-        ...prev,
-        [rowLabel]: prev[rowLabel].map((s) =>
-          s.number === seatNumber ? { ...s, selected: !s.selected } : s,
-        ),
-      }));
-      dispatch(
-        selectSeat({
-          number: seatNumber,
-          rowLabel: rowLabel,
-          available: true,
-          selected: !seat.selected,
-          seatType: 'normal',
-        } as Seat),
-      );
-    }
+  const handleSelectSeat = (seat: Seat) => {
+    setSeatData((prev) => ({
+      ...prev,
+      [seat.rowLabel]: prev[seat.rowLabel].map((s) =>
+        s.number === seat.number ? { ...s, selected: !s.selected } : s,
+      ),
+    }));
+    dispatch(
+      selectSeat({
+        number: seat.number,
+        rowLabel: seat.rowLabel,
+        available: seat.available,
+        selected: !seat.selected,
+        seatType: seat.seatType,
+      } as Seat),
+    );
   };
 
-  const handleDeselectSeat = (rowLabel: string, seatNumber: number) => {
-    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
-    if (seat) {
-      setSeatData((prev) => ({
-        ...prev,
-        [rowLabel]: prev[rowLabel].map((s) =>
-          s.number === seatNumber ? { ...s, selected: false } : s,
-        ),
-      }));
-      dispatch(
-        deselectSeatAction({
-          number: seatNumber,
-          rowLabel: rowLabel,
-          available: true,
-          selected: false,
-          seatType: 'normal',
-        } as Seat),
-      );
-    }
+  const handleDeselectSeat = (seat: Seat) => {
+    setSeatData((prev) => ({
+      ...prev,
+      [seat.rowLabel]: prev[seat.rowLabel].map((s) =>
+        s.number === seat.number ? { ...s, selected: false } : s,
+      ),
+    }));
+    dispatch(
+      deselectSeatAction({
+        number: seat.number,
+        rowLabel: seat.rowLabel,
+        available: true,
+        selected: false,
+        seatType: 'normal',
+      } as Seat),
+    );
   };
 
   // Handles selecting of seats
-  const onSeatSelect = (rowLabel: string, seatNumber: number) => {
-    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
-    if (seat) {
-      if (seat.selected) {
-        handleDeselectSeat(rowLabel, seatNumber);
-      } else {
-        handleSelectSeat(rowLabel, seatNumber);
-      }
+  const onSeatSelect = (seat: Seat) => {
+    if (seat.selected) {
+      handleDeselectSeat(seat);
+    } else {
+      handleSelectSeat(seat);
     }
   };
 
@@ -135,9 +126,11 @@ export const SeatPlanning: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full p-4">
-      <div className="w-[30%] h-24 text-white bg-[#484848] rounded-t-xl flex items-center justify-center">
-        <span className="text-gray-400 text-xl">Stage</span>
+    <div className="flex flex-col items-center w-full">
+      <div className="w-[32%] h-20 text-white bg-gray-700 rounded-t-xl flex items-center justify-center">
+        <span className="text-gray-400 text-xl font-bold tracking-widest">
+          Stage
+        </span>
       </div>
       <div className="flex flex-row justify-between w-full h-full select-none mt-8">
         {renderWing(SEATING_ARRANGEMENT.leftWing, 'end')}
