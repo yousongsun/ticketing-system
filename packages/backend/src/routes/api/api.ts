@@ -5,8 +5,18 @@ const router: Router = express.Router();
 
 // Import child routes
 import testsRoutes from './api-tests';
-import usersRoutes from './api-user';
 router.use('/tests', testsRoutes);
-router.use('/user', usersRoutes);
+
+// Import user route
+import usersRoutes from './api-users';
+router.use('/users', usersRoutes);
+
+// Import seat selection route
+import seatRoutes from './api-seats';
+router.use('/seats', seatRoutes);
+
+// Import order route
+import ordersRoutes from './api-orders';
+router.use('/order', ordersRoutes);
 
 export default router;

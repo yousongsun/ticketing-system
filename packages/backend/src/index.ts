@@ -2,7 +2,6 @@ import express, { type Express, type Request, type Response } from 'express';
 
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import routes from './routes/routes';
 
@@ -10,6 +9,10 @@ import routes from './routes/routes';
 dotenv.config();
 
 const PORT: number = Number(process.env.PORT) || 3000;
+const DB_URL: string = process.env.DB_URL
+  ? process.env.DB_URL
+  : 'mongodb://localhost:27017/mmss';
+
 const app: Express = express();
 
 // Enable CORS for all origins, allow specific HTTP methods, and include cookies in cross-origin requests
@@ -33,10 +36,9 @@ app.use(express.static('public'));
 app.use('/', routes);
 
 (async () => {
-  // Create a new MongoDB in-memory server instance and connect to it using Mongoose
-  const mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
-  await mongoose.connect(uri);
+  // Start the DB running. Then, once it's connected, start the server.
+  await mongoose.connect(DB_URL);
+
   // Start the Express server and allow external access
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
