@@ -3,8 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { beforeAll, describe, expect, test } from 'vitest';
-import apiTestsRouter from '../api-tests';
-import orderRouter from '../order-routes';
+import orderRouter from '../api-orders';
 
 let app: Express;
 

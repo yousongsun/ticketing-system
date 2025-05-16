@@ -1,9 +1,11 @@
 // src/pages/Home.tsx
 import type React from 'react';
 import { useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { Button } from '../components/Button';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const secondSectionRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -113,7 +115,7 @@ const HomePage: React.FC = () => {
 
         <Button
           onClick={() => {
-            window.location.href = '/placeholder';
+            navigate('/buy');
           }}
           className="p-0 bg-transparent hover:bg-transparent"
         >

@@ -1,4 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  initializeSeatData,
+  toggleSeatSelection,
+} from '../../redux/slices/seatSelectionSlice';
+import type { AppDispatch, RootState } from '../../redux/store';
 import SeatRow from './SeatRow';
 import {
   type RowArrangement,
@@ -9,17 +15,25 @@ import {
 
 export interface Seat {
   number: number;
+  rowLabel: string;
   available: boolean;
   selected?: boolean;
+  seatType: 'normal' | 'vip';
 }
 
-const SQUISH_MAGNITUDE = 10;
-const SQUISH_OFFSET = 22;
+// Variables to adjust x offset of rows relative to center wing
+const SQUISH_MAGNITUDE = 7;
+const SQUISH_OFFSET = 24;
 
 export const SeatPlanning: React.FC = () => {
-  const [seatData, setSeatData] = useState<SeatData>({}); // Holds current seat data
   const rowXOffsets: { [key: string]: number } = {};
 
+  const dispatch = useDispatch<AppDispatch>();
+  const seatData = useSelector(
+    (state: RootState) => state.seatSelection.seatData,
+  );
+
+  // Calculate the x offset for left and right wings based on middle seating
   for (const row of SEATING_ARRANGEMENT.middle) {
     const rowLabel = row.label;
     const startSeat = row.startSeat;
@@ -35,23 +49,24 @@ export const SeatPlanning: React.FC = () => {
     rowXOffsets[rowLabel] = offset;
   }
 
-  // Handles selecting of seats
-  const onSeatSelect = (rowLabel: string, seatNumber: number) => {
-    setSeatData((prev) => {
-      const updatedRow = prev[rowLabel].map((seat) =>
-        seat.number === seatNumber
-          ? { ...seat, selected: !seat.selected }
-          : seat,
-      );
-      return { ...prev, [rowLabel]: updatedRow };
-    });
+  // Initialize the Redux seat data with mock data
+  useEffect(() => {
+    dispatch(initializeSeatData(mockSeatData));
+  }, [dispatch]);
+
+  // Handle seat selection
+  const onSeatSelect = (seat: Seat) => {
+    dispatch(toggleSeatSelection(seat));
   };
 
+  // Render each wing of seats separately
   const renderWing = (
     wing: RowArrangement[],
     align: 'start' | 'center' | 'end',
   ) => (
-    <div className={`flex flex-col items-${align} mb-4`}>
+    <div
+      className={`flex flex-col ${align === 'start' ? 'items-start' : align === 'end' ? 'items-end' : 'items-center'}`}
+    >
       {wing.map(
         (row, _) =>
           (seatData[row.label] || []).length > 0 && (
@@ -71,22 +86,16 @@ export const SeatPlanning: React.FC = () => {
     </div>
   );
 
-  useEffect(() => {
-    const normalizedSeatData: SeatData = Object.fromEntries(
-      Object.entries(mockSeatData).map(([rowLabel, seats]) => [
-        rowLabel,
-        seats.map((seat) => ({ ...seat, selected: false })),
-      ]),
-    );
-    setSeatData(normalizedSeatData);
-  }, []);
-
   return (
-    <div className="flex flex-col items-center w-full p-4">
-      <div className="w-[40%] h-32 text-white bg-[#484848] rounded-t-xl flex items-center justify-center mb-10">
-        <span className="text-gray-400 text-xl">Stage</span>
+    <div className="flex flex-col items-center w-full">
+      {/* Stage container */}
+      <div className="w-[32%] h-20 text-white bg-gray-700 rounded-t-xl flex items-center justify-center">
+        <span className="text-gray-400 text-xl font-bold tracking-widest">
+          Stage
+        </span>
       </div>
-      <div className="flex flex-row justify-between w-full h-full p-4 pt-16 select-none">
+      {/* Seating wing container */}
+      <div className="flex flex-row justify-between w-full h-full select-none mt-8">
         {renderWing(SEATING_ARRANGEMENT.leftWing, 'end')}
         {renderWing(SEATING_ARRANGEMENT.middle, 'center')}
         {renderWing(SEATING_ARRANGEMENT.rightWing, 'start')}
@@ -94,3 +103,4 @@ export const SeatPlanning: React.FC = () => {
     </div>
   );
 };
+export type { SeatData };
