@@ -20,7 +20,8 @@ const App: React.FC = () => {
       <Routes>
         <Route
           path="/"
-          element={ /*
+          element={
+            /*
             <Link to="/">
               <Button
                 onClick={() => setButtonText('Hello Auckland Med Revue!')}
@@ -36,8 +37,8 @@ const App: React.FC = () => {
               </Button>
             </Link>
             */
-           <SponsorPage />
-          } 
+            <SponsorPage />
+          }
         />
       </Routes>
     </>

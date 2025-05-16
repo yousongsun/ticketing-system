@@ -19,7 +19,9 @@ export const Sponsors: React.FC = () => {
     // Layout changes depending on screen size
     <div className="flex flex-col justify-center md:space-y-10 space-y-5 text-center">
       <div>
-        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">PLATINUM</p>
+        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
+          PLATINUM
+        </p>
         <img
           src={weLogo}
           alt="We Getting to the Guts of it"
@@ -28,7 +30,9 @@ export const Sponsors: React.FC = () => {
       </div>
 
       <div>
-        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">GOLD</p>
+        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
+          GOLD
+        </p>
         <div className="flex flex-col sm:flex-row justify-center items-center md:gap-8 gap-4">
           <img
             src={respmedLogo}
@@ -44,7 +48,9 @@ export const Sponsors: React.FC = () => {
       </div>
 
       <div>
-        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">SILVER</p>
+        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
+          SILVER
+        </p>
         <img
           src={pizzaclubLogo}
           alt="Pizza Club"
@@ -53,18 +59,20 @@ export const Sponsors: React.FC = () => {
       </div>
 
       <div>
-        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">BRONZE</p>
+        <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
+          BRONZE
+        </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
           <img
             src={medworldLogo}
             alt="MedWorld Institute"
             className="md:h-20 h-10 object-contain"
           />
-          <img 
-            src={mpsLogo} 
-            alt="MPS" 
-            className="md:h-20 h-10 object-contain" 
-            />
+          <img
+            src={mpsLogo}
+            alt="MPS"
+            className="md:h-20 h-10 object-contain"
+          />
         </div>
       </div>
     </div>
