@@ -1,12 +1,14 @@
 import type React from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Route, Routes } from 'react-router';
 import { Button } from './components/Button';
-import Home from './pages/Home';
-
-import { useDispatch, useSelector } from 'react-redux';
+import { Menu } from './components/Menu';
+import HomePage from './pages/Home';
 import { decrement, increment } from './redux/slices/counterSlice';
 import type { AppDispatch, RootState } from './redux/store';
+
+import { SponsorPage } from './pages/SponsorPage';
 
 const App: React.FC = () => {
   const [buttonText, setButtonText] = useState('Click Me');
@@ -20,8 +22,45 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            /*
-            <Link to="/">
+            <>
+              <Menu onBuyPage={false} />
+              <HomePage />
+            </>
+          }
+        />
+        <Route
+          path="show"
+          element={
+            <>
+              <Menu onBuyPage={false} />
+              <h1>Show</h1>
+            </>
+          }
+        />
+        <Route
+          path="gallery"
+          element={
+            <>
+              <Menu onBuyPage={false} />
+              <h1>Gallery</h1>
+            </>
+          }
+        />
+        <Route
+          path="about"
+          element={
+            <>
+              <Menu onBuyPage={false} />
+              <h1>About</h1>
+            </>
+          }
+        />
+        <Route
+          path="buy"
+          element={
+            <>
+              <Menu onBuyPage={true} />
+              <h1>Buy Tickets</h1>
               <Button
                 onClick={() => setButtonText('Hello Auckland Med Revue!')}
               >
@@ -34,9 +73,16 @@ const App: React.FC = () => {
               <Button type="button" onClick={() => dispatch(decrement())}>
                 Decrement
               </Button>
-            </Link>
-            */
-            <Home />
+            </>
+          }
+        />
+        <Route
+          path="sponsor"
+          element={
+            <>
+              <Menu onBuyPage={false} />
+              <SponsorPage />
+            </>
           }
         />
       </Routes>
