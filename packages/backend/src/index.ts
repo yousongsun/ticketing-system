@@ -37,6 +37,7 @@ app.use('/', routes);
   const mongod = await MongoMemoryServer.create();
   const uri = mongod.getUri();
   await mongoose.connect(uri);
+  console.log(uri);
   // Start the Express server and allow external access
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -13,4 +13,7 @@ router.use('/user', usersRoutes);
 import seatRoutes from './seat-selection-api';
 router.use('/seats', seatRoutes);
 
+import orderRoutes from './order-routes';
+router.use('/order', orderRoutes);
+
 export default router;
