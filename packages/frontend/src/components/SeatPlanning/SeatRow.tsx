@@ -10,6 +10,7 @@ interface SeatRowProps {
   onSeatSelect: (seat: Seat) => void;
 }
 
+// Variables to adjust y offset of seats
 const ANGLE_OFFSET = 40;
 
 const SeatRow: React.FC<SeatRowProps> = ({
@@ -19,7 +20,9 @@ const SeatRow: React.FC<SeatRowProps> = ({
   xOffset = 0,
   onSeatSelect,
 }) => {
+  // Determine if the row is apart of the left or right wing
   const isWing = direction === 'start' || direction === 'end';
+
   return (
     <div
       className="flex h-6 gap-x-[1px] text-white"
@@ -27,11 +30,13 @@ const SeatRow: React.FC<SeatRowProps> = ({
         transform: `translateX(${direction === 'start' ? -xOffset : direction === 'end' ? xOffset : 0}px)`,
       }}
     >
+      {/* Row label shown at each start of row for middle wing */}
       <div
         className={`w-8 text-center font-bold text-sm ${isWing ? 'text-transparent' : ''}`}
       >
         {row.label}
       </div>
+      {/* Create seat buttons, accounting for y offset and potential gap */}
       {Array.from({ length: row.endSeat - row.startSeat + 1 }, (_, index) => {
         const reversedIndex = seats.length - 1 - index;
         const seat = seats[reversedIndex];
@@ -60,6 +65,7 @@ const SeatRow: React.FC<SeatRowProps> = ({
           )
         );
       })}
+      {/* Row label shown at end of row for middle wing */}
       <div
         className={`w-8 text-center font-bold text-sm ${isWing ? 'text-transparent' : ''}`}
       >

@@ -1,31 +1,33 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import type { Seat } from '../../components/SeatPlanning/SeatPlanning';
+import type {
+  Seat,
+  SeatData,
+} from '../../components/SeatPlanning/SeatPlanning';
 
 interface SeatSelectionState {
-  selectedSeats: Seat[];
+  seatData: SeatData;
 }
 
 const initialState: SeatSelectionState = {
-  selectedSeats: [],
+  seatData: {},
 };
 
 const seatSelectionSlice = createSlice({
   name: 'seatSelection',
   initialState,
   reducers: {
-    selectSeat: (state, action: PayloadAction<Seat>) => {
-      state.selectedSeats.push(action.payload);
+    initializeSeatData: (state, action: PayloadAction<SeatData>) => {
+      state.seatData = action.payload;
     },
-    deselectSeat: (state, action: PayloadAction<Seat>) => {
-      state.selectedSeats = state.selectedSeats.filter(
-        (seat) =>
-          seat.rowLabel !== action.payload.rowLabel ||
-          seat.number !== action.payload.number,
+    toggleSeatSelection: (state, action: PayloadAction<Seat>) => {
+      const { rowLabel, number } = action.payload;
+      state.seatData[rowLabel] = state.seatData[rowLabel].map((seat) =>
+        seat.number === number ? { ...seat, selected: !seat.selected } : seat,
       );
     },
   },
 });
 
-export const { selectSeat, deselectSeat } = seatSelectionSlice.actions;
-
+export const { initializeSeatData, toggleSeatSelection } =
+  seatSelectionSlice.actions;
 export default seatSelectionSlice.reducer;
