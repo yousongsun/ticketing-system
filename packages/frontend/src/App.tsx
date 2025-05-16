@@ -4,6 +4,7 @@ import { Link, Route, Routes } from 'react-router';
 import { Button } from './components/Button';
 
 import { useDispatch, useSelector } from 'react-redux';
+import SeatSelectionPage from './pages/seat_selection';
 import { decrement, increment } from './redux/slices/counterSlice';
 import type { AppDispatch, RootState } from './redux/store';
 
@@ -32,6 +33,14 @@ const App: React.FC = () => {
               <Button type="button" onClick={() => dispatch(decrement())}>
                 Decrement
               </Button>
+            </Link>
+          }
+        />
+        <Route
+          path="/seat-selection"
+          element={
+            <Link to="/seat-selection">
+              <SeatSelectionPage />
             </Link>
           }
         />

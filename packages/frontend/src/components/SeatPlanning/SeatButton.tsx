@@ -17,7 +17,7 @@ const SeatButton: React.FC<SeatButtonProps> = ({
   if (isGap) {
     return (
       <div
-        className="w-14 h-4 bg-transparent"
+        className="w-10 h-3 bg-transparent"
         style={{ transform: yOffset ? `translateY(${yOffset}px)` : undefined }}
       />
     );
@@ -29,6 +29,12 @@ const SeatButton: React.FC<SeatButtonProps> = ({
   const availableClass = seat.available
     ? 'cursor-pointer'
     : 'cursor-not-allowed !bg-red-400 border-none';
+  const regularClass = seat.selected
+    ? 'bg-transparent border-2 border-red-500'
+    : 'bg-transparent border-2 border-white';
+  const vipClass = seat.selected
+    ? 'bg-transparent border-2 border-red-500'
+    : 'bg-transparent border-2 border-yellow-500';
 
   const handleOnHover = (e: React.MouseEvent | React.FocusEvent) => {
     const button = e.target as HTMLButtonElement;
@@ -48,7 +54,7 @@ const SeatButton: React.FC<SeatButtonProps> = ({
       onMouseOver={(e) => handleOnHover(e)}
       onMouseOut={(e) => handleHoverEnd(e)}
       style={{ transform: yOffset ? `translateY(${yOffset}px)` : undefined }}
-      className={`w-4 h-4 text-[8px] rounded-full transition-all duration-200 ${selectedClass} ${availableClass}`}
+      className={`w-[12px] h-[12px] text-[5px] rounded-full transition-all duration-200 ${seat.seatType === 'normal' ? regularClass : vipClass} ${availableClass}`}
     >
       {' '}
     </button>

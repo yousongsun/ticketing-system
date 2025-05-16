@@ -1,4 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  deselectSeat as deselectSeatAction,
+  selectSeat,
+} from '../../redux/slices/seatSelectionSlice';
+import type { AppDispatch } from '../../redux/store';
 import SeatRow from './SeatRow';
 import {
   type RowArrangement,
@@ -9,16 +15,19 @@ import {
 
 export interface Seat {
   number: number;
+  rowLabel: string;
   available: boolean;
   selected?: boolean;
+  seatType: 'normal' | 'vip';
 }
 
-const SQUISH_MAGNITUDE = 10;
-const SQUISH_OFFSET = 22;
+const SQUISH_MAGNITUDE = 7;
+const SQUISH_OFFSET = 24;
 
 export const SeatPlanning: React.FC = () => {
   const [seatData, setSeatData] = useState<SeatData>({}); // Holds current seat data
   const rowXOffsets: { [key: string]: number } = {};
+  const dispatch = useDispatch<AppDispatch>();
 
   for (const row of SEATING_ARRANGEMENT.middle) {
     const rowLabel = row.label;
@@ -35,23 +44,67 @@ export const SeatPlanning: React.FC = () => {
     rowXOffsets[rowLabel] = offset;
   }
 
+  const handleSelectSeat = (rowLabel: string, seatNumber: number) => {
+    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
+    if (seat) {
+      setSeatData((prev) => ({
+        ...prev,
+        [rowLabel]: prev[rowLabel].map((s) =>
+          s.number === seatNumber ? { ...s, selected: !s.selected } : s,
+        ),
+      }));
+      dispatch(
+        selectSeat({
+          number: seatNumber,
+          rowLabel: rowLabel,
+          available: true,
+          selected: !seat.selected,
+          seatType: 'normal',
+        } as Seat),
+      );
+    }
+  };
+
+  const handleDeselectSeat = (rowLabel: string, seatNumber: number) => {
+    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
+    if (seat) {
+      setSeatData((prev) => ({
+        ...prev,
+        [rowLabel]: prev[rowLabel].map((s) =>
+          s.number === seatNumber ? { ...s, selected: false } : s,
+        ),
+      }));
+      dispatch(
+        deselectSeatAction({
+          number: seatNumber,
+          rowLabel: rowLabel,
+          available: true,
+          selected: false,
+          seatType: 'normal',
+        } as Seat),
+      );
+    }
+  };
+
   // Handles selecting of seats
   const onSeatSelect = (rowLabel: string, seatNumber: number) => {
-    setSeatData((prev) => {
-      const updatedRow = prev[rowLabel].map((seat) =>
-        seat.number === seatNumber
-          ? { ...seat, selected: !seat.selected }
-          : seat,
-      );
-      return { ...prev, [rowLabel]: updatedRow };
-    });
+    const seat = seatData[rowLabel].find((seat) => seat.number === seatNumber);
+    if (seat) {
+      if (seat.selected) {
+        handleDeselectSeat(rowLabel, seatNumber);
+      } else {
+        handleSelectSeat(rowLabel, seatNumber);
+      }
+    }
   };
 
   const renderWing = (
     wing: RowArrangement[],
     align: 'start' | 'center' | 'end',
   ) => (
-    <div className={`flex flex-col items-${align} mb-4`}>
+    <div
+      className={`flex flex-col ${align === 'start' ? 'items-start' : align === 'end' ? 'items-end' : 'items-center'}`}
+    >
       {wing.map(
         (row, _) =>
           (seatData[row.label] || []).length > 0 && (
@@ -83,10 +136,10 @@ export const SeatPlanning: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full p-4">
-      <div className="w-[40%] h-32 text-white bg-[#484848] rounded-t-xl flex items-center justify-center mb-10">
+      <div className="w-[30%] h-24 text-white bg-[#484848] rounded-t-xl flex items-center justify-center">
         <span className="text-gray-400 text-xl">Stage</span>
       </div>
-      <div className="flex flex-row justify-between w-full h-full p-4 pt-16 select-none">
+      <div className="flex flex-row justify-between w-full h-full select-none mt-8">
         {renderWing(SEATING_ARRANGEMENT.leftWing, 'end')}
         {renderWing(SEATING_ARRANGEMENT.middle, 'center')}
         {renderWing(SEATING_ARRANGEMENT.rightWing, 'start')}

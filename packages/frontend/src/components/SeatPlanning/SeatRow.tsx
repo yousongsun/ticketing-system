@@ -10,7 +10,7 @@ interface SeatRowProps {
   onSeatSelect: (rowLabel: string, seatNumber: number) => void;
 }
 
-const ANGLE_OFFSET = 70;
+const ANGLE_OFFSET = 40;
 
 const SeatRow: React.FC<SeatRowProps> = ({
   row,
@@ -22,7 +22,7 @@ const SeatRow: React.FC<SeatRowProps> = ({
   const isWing = direction === 'start' || direction === 'end';
   return (
     <div
-      className="flex h-10 gap-x-[4px] text-white"
+      className="flex h-6 gap-x-[1px] text-white"
       style={{
         transform: `translateX(${direction === 'start' ? -xOffset : direction === 'end' ? xOffset : 0}px)`,
       }}
@@ -56,7 +56,7 @@ const SeatRow: React.FC<SeatRowProps> = ({
                 (seat.number === 20 || seat.number === 21)
               }
               onSeatSelect={() =>
-                onSeatSelect(row.label, row.startSeat + index)
+                onSeatSelect(row.label, row.startSeat + reversedIndex)
               }
             />
           )
