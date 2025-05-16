@@ -2,6 +2,8 @@ import express, { type Express, type Request, type Response } from 'express';
 
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 import routes from './routes/routes';
 
 // Load environment variables from the .env file
@@ -30,7 +32,13 @@ app.use(express.static('public'));
 
 app.use('/', routes);
 
-// Start the Express server and allow external access
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+(async () => {
+  // Create a new MongoDB in-memory server instance and connect to it using Mongoose
+  const mongod = await MongoMemoryServer.create();
+  const uri = mongod.getUri();
+  await mongoose.connect(uri);
+  // Start the Express server and allow external access
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+})();
