@@ -1,10 +1,10 @@
 import type React from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Route, Routes } from 'react-router';
 import { Button } from './components/Button';
 import { Menu } from './components/Menu';
-
-import { useDispatch, useSelector } from 'react-redux';
+import HomePage from './pages/Home';
 import { decrement, increment } from './redux/slices/counterSlice';
 import type { AppDispatch, RootState } from './redux/store';
 
@@ -24,7 +24,7 @@ const App: React.FC = () => {
           element={
             <>
               <Menu onBuyPage={false} />
-              <h1>Home</h1>
+              <HomePage />
             </>
           }
         />
