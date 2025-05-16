@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { Link, Route, Routes } from 'react-router';
 import { Button } from './components/Button';
+import { Menu } from './components/Menu';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { decrement, increment } from './redux/slices/counterSlice';
@@ -19,7 +20,45 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            <Link to="/">
+            <>
+              <Menu />
+              <h1>Home</h1>
+            </>
+          }
+        />
+        <Route
+          path="show"
+          element={
+            <>
+              <Menu />
+              <h1>Show</h1>
+            </>
+          }
+        />
+        <Route
+          path="gallery"
+          element={
+            <>
+              <Menu />
+              <h1>Gallery</h1>
+            </>
+          }
+        />
+        <Route
+          path="about"
+          element={
+            <>
+              <Menu />
+              <h1>About</h1>
+            </>
+          }
+        />
+        <Route
+          path="buy"
+          element={
+            <>
+              <Menu onBuyPage={true} />
+              <h1>Buy Tickets</h1>
               <Button
                 onClick={() => setButtonText('Hello Auckland Med Revue!')}
               >
@@ -32,7 +71,7 @@ const App: React.FC = () => {
               <Button type="button" onClick={() => dispatch(decrement())}>
                 Decrement
               </Button>
-            </Link>
+            </>
           }
         />
       </Routes>
@@ -41,3 +80,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
