@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useState } from 'react';
-import { TicketForm } from './components/TicketForm';
+import { TicketForm } from '../components/TicketForm';
 
 type FormData = {
   firstName: string;
