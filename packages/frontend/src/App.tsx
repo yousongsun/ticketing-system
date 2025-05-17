@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { Link, Route, Routes } from 'react-router';
+import UserDetail from './UserDetail';
 import { Button } from './components/Button';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,6 +36,7 @@ const App: React.FC = () => {
             </Link>
           }
         />
+        <Route path="/user-detail" element={<UserDetail />} />
       </Routes>
     </>
   );
