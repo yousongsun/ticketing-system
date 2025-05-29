@@ -1,26 +1,223 @@
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // src/pages/Home.tsx
 import type React from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Button } from '../components/Button';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const secondSectionRef = useRef<HTMLDivElement | null>(null);
 
+  // GSAP Animation Ref definitions
+  const bgRef = useRef<HTMLDivElement>(null);
+  const headerSlideRef = useRef(null);
+  const divFadeInRef = useRef(null);
+  const h2FadeInRef = useRef(null);
+  const posterRef = useRef(null);
+  const TextZoomRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+
+  // Effect for background image zoom on opening
+
+  useEffect(() => {
+    if (bgRef.current) {
+      gsap.to(bgRef.current, {
+        scale: 1.1,
+        duration: 3,
+        ease: 'power1.out',
+        transformOrigin: 'center center',
+        repeat: 0,
+        yoyo: false,
+      });
+    }
+  }, []);
+
+  // Effect for 'Back To The Suture' word by word slide in
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    // Split the text into words and wrap them in spans
+    const text = el.textContent || '';
+    el.innerHTML = '';
+
+    const words = text.split(' ');
+    const fragment = document.createDocumentFragment();
+
+    words.forEach((word, index) => {
+      const span = document.createElement('span');
+      span.textContent = word + (index < words.length - 1 ? ' ' : '');
+      span.style.display = 'inline-block';
+      span.style.whiteSpace = 'pre'; // preserve spaces
+      fragment.appendChild(span);
+    });
+
+    el.appendChild(fragment);
+
+    const spans = el.querySelectorAll('span');
+
+    // Animate: slide in from right
+    gsap.fromTo(
+      spans,
+      { x: 50, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Simplified fade/slide-in animation for header
+  useEffect(() => {
+    if (!headerSlideRef.current) return;
+
+    gsap.fromTo(
+      headerSlideRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: headerSlideRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Effect for bottom page text and secondary header - slide and fade in from the right
+
+  useEffect(() => {
+    // Div animation
+    gsap.fromTo(
+      divFadeInRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: divFadeInRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+
+    // H2 animation
+    gsap.fromTo(
+      h2FadeInRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: h2FadeInRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Zoom in and rotate poster image on scroll
+
+  useEffect(() => {
+    if (!posterRef.current) return;
+
+    gsap.fromTo(
+      posterRef.current,
+      { scale: 0.8, rotateY: 45, opacity: 0 },
+      {
+        scale: 1,
+        rotateY: 0,
+        opacity: 1,
+        duration: 2,
+        delay: 0.4,
+        ease: 'power4.out',
+        scrollTrigger: {
+          trigger: posterRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Effect for text info zoom on hover
+
+  useEffect(() => {
+    if (!TextZoomRef.current) return;
+
+    const h2Elements = TextZoomRef.current.querySelectorAll('h2');
+
+    for (const el of h2Elements) {
+      // on mouse enter, scale up
+      el.addEventListener('mouseenter', () => {
+        el.style.transform = 'scale(1.2)';
+        el.style.transition = 'transform 0.3s ease-in-out';
+      });
+
+      // on mouse leave, scale back
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'scale(1)';
+      });
+    }
+
+    // Cleanup listeners on unmount
+    return () => {
+      for (const el of h2Elements) {
+        el.removeEventListener('mouseenter', () => {});
+        el.removeEventListener('mouseleave', () => {});
+      }
+    };
+  }, []);
+
+  // Page Content
+
   return (
     <div className="overflow-y-auto">
       {/* Hero Section */}
+
       <section
         className="relative min-h-screen w-full bg-no-repeat lg:bg-bottom bg-center bg-cover bg-[#070507]"
         style={{
-          backgroundImage: "url('/src/assets/medrevue-home-background.png')",
           backgroundPosition: 'center 60%',
         }}
       >
+        <div
+          ref={bgRef}
+          className="absolute inset-0 bg-no-repeat bg-center bg-cover pointer-events-none"
+          style={{
+            backgroundImage: "url('/src/assets/medrevue-home-background.png')",
+            backgroundPosition: 'center 60%',
+            transformOrigin: 'center center',
+            zIndex: 0, // behind text
+          }}
+        />
+
         <h1
           style={{ fontSize: 'clamp(4.5rem, 8vw, 6rem)' }}
-          className="absolute top-[30%] left-[39%] transform -translate-x-35 -translate-y-30 text-[#E5CE63] font-bold font-poppins lg:whitespace-nowrap lg:-translate-x-1/2 lg:-translate-y-10
+          className="absolute top-[20%] left-[39%] transform -translate-x-35 -translate-y-30 text-[#E5CE63] font-bold font-poppins lg:whitespace-nowrap lg:-translate-x-1/2 lg:-translate-y-10
                     sm:-translate-y-2
 
                 "
@@ -30,20 +227,20 @@ const HomePage: React.FC = () => {
 
         <h2
           style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)' }}
-          className="text-[#FFF0A2] absolute top-[46%] left-[23%] transform -translate-x-20 -translate-y-5 font-bold font-inter whitespace-nowrap
+          className="text-[#FFF0A2] absolute top-[36%] left-[23%] transform -translate-x-20 -translate-y-5 font-bold font-inter whitespace-nowrap
                     lg:whitespace-nowrap lg:-translate-x-50 lg:-translate-y-0
                     sm:-translate-y-2 lg:font-medium"
         >
           A University of Auckland non-profit production
         </h2>
 
-        {/* Bottom screen details*/}
+        {/* Bottom-left screen details*/}
         <button
           type="button"
           onClick={() =>
             secondSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
           }
-          className="absolute top-[58%] left-[9.5%] lg:translate-y-2"
+          className="absolute top-[48%] left-[9.5%] lg:translate-y-2"
           aria-label="Scroll to next section"
         >
           <svg
@@ -52,7 +249,7 @@ const HomePage: React.FC = () => {
             viewBox="0 0 44 44"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="absolute top-[58%] left-[9.5%] lg:translate-y-21"
+            className="absolute top-[48%] left-[9.5%] lg:translate-y-21"
           >
             <title>Scroll down arrow</title>
             <path
@@ -67,7 +264,7 @@ const HomePage: React.FC = () => {
 
         <div
           style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)' }}
-          className="absolute top-[77%] left-[10%] text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2
+          className="absolute top-[67%] left-[10%] text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2
                     -translate-y-20 lg:translate-y-2"
         >
           <h2>7TH AUG 2025</h2>
@@ -82,13 +279,16 @@ const HomePage: React.FC = () => {
         className="relative h-screen bg-[#070507] flex h-[200vh] sm:h-screen overflow-y-auto sm:overflow-hidden"
       >
         <img
+          // Poster positioned left
           src="/src/assets/medrevue-poster.png"
+          ref={posterRef}
           alt="2025 MedRevue Poster - Back To The Suture"
           className="absolute top-[37%] left-[5%] w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40"
         />
-
-        <div className="absolute right-[10%] top-[7%] text-right lg:translate-y-22">
+        {/* Text on right-hand side */}
+        <div className="absolute right-[10%] top-[7%] text-right lg:translate-y-22 translate-x-15 transition-all duration-700">
           <h2
+            ref={h2FadeInRef}
             style={{ fontSize: 'clamp(1.25rem, 3vw, 1.3rem)' }}
             className="text-[#FFF0A2] font-inter font-medium text-xl mb-4"
           >
@@ -96,13 +296,17 @@ const HomePage: React.FC = () => {
           </h2>
 
           <h1
+            ref={textRef}
             style={{ fontSize: 'clamp(2.1rem, 8vw, 3.75rem)' }}
             className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] mb-8"
           >
             BACK TO THE SUTURE
           </h1>
 
-          <div className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15">
+          <div
+            ref={divFadeInRef}
+            className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15"
+          >
             <p>
               Our take on the classic: Back to the Future. Very exciting show
               blurb here, lorem ipsum etc. etcetera etcetera
@@ -145,6 +349,7 @@ const HomePage: React.FC = () => {
         </Button>
 
         <div
+          ref={TextZoomRef}
           style={{ fontSize: 'clamp(1.125rem, 4vw, 1.875rem)' }}
           className="absolute left-[50%] top-[85%] text-[#FFFBE8] transform -translate-x-1/2 font-inter font-semibold text-center flex space-x-15"
         >
