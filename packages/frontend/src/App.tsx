@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { Menu } from './components/Menu';
 import HomePage from './pages/Home';
 import { SponsorPage } from './pages/SponsorPage';
+import SuccessPage from './pages/SuccessPage';
 import UserDetail from './pages/UserDetail';
 import SeatSelectionPage from './pages/seat_selection';
 
@@ -75,6 +76,16 @@ const App: React.FC = () => {
           }
         />
         <Route path="/user-detail" element={<UserDetail />} />
+
+        <Route
+          path="/success"
+          element={
+            <>
+              <Menu />
+              <SuccessPage />
+            </>
+          }
+        />
       </Routes>
       <Footer />
     </>
