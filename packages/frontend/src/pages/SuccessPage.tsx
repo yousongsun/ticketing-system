@@ -1,8 +1,8 @@
 import type React from 'react';
 
 import { useNavigate } from 'react-router';
-import checkCircle from '/src/assets/check-circle.svg';
-import medrevuePoster from '/src/assets/medrevue-poster.png';
+import checkCircle from '../assets/check-circle.svg';
+import medrevuePoster from '../assets/medrevue-poster.png';
 
 import { Button } from '../components/Button';
 

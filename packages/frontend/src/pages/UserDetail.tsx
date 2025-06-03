@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { TicketForm } from '../components/TicketForm';
 
 type FormData = {
@@ -24,7 +25,8 @@ const initialFormStateWithId = (id: string): FormDataWithId => ({
 });
 
 const UserDetail: React.FC = () => {
-  const [numberOfSeats] = useState(4); // number of seats
+  const navigate = useNavigate();
+  const [numberOfSeats] = useState(1); // number of seats
   const [formStates, setFormStates] = useState<FormDataWithId[]>(
     Array.from({ length: numberOfSeats }, (_, i) =>
       initialFormStateWithId(`ticket-${Date.now()}-${i}`),
@@ -86,7 +88,7 @@ const UserDetail: React.FC = () => {
           <div className="w-[40%] bg-[#070507] rounded-xl p-4 flex flex-col gap-y-2 justify-end">
             <div className="flex flex-col items-end justify-end">
               <h2 className="text-[#FFF0A2] text-lg tracking-wide text-right mb-1">
-                7th August | 05:00 - 06:30 pm
+                14 Aug, 7:30pm - 16 Aug, 10:30 pm
               </h2>
               <h1 className="text-[#E5CE63] font-black text-2xl tracking-widest text-right leading-none">
                 BACK TO THE SUTURE
@@ -115,6 +117,7 @@ const UserDetail: React.FC = () => {
           <button
             type="submit"
             className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2]"
+            onClick={() => navigate('/success')}
           >
             Submit
           </button>
