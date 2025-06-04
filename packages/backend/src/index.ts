@@ -2,7 +2,6 @@ import express, { type Express, type Request, type Response } from 'express';
 
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import routes from './routes/routes';
 import webhookRoutes from './routes/webhook-routes';
@@ -39,9 +38,6 @@ app.use('/', routes);
 
 (async () => {
   // Start the DB running. Then, once it's connected, start the server.
-  const mongod = await MongoMemoryServer.create();
-  const DB_URL = mongod.getUri();
-
   await mongoose.connect(DB_URL);
   // Start the Express server and allow external access
   app.listen(PORT, '0.0.0.0', () => {
