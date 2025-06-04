@@ -39,10 +39,5 @@
     "@types/mongoose": "^5.11.96",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0"
-  },
-  "dependencies": {
-    "@fontsource/inter": "^5.2.5",
-    "@fontsource/open-sans": "^5.2.5",
-    "@fontsource/poppins": "^5.2.6"
   }
 }

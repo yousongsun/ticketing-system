@@ -1,14 +1,14 @@
 import mongoose, { Schema, model, type Document } from 'mongoose';
 
 interface Order extends Document {
-  userID: string;
+  email: string;
   numberOfTickets: number;
   seats: string[];
   paid: boolean;
 }
 
 const orderSchema = new Schema<Order>({
-  userID: { type: String, required: true },
+  email: { type: String, required: true },
   numberOfTickets: { type: Number, required: true },
   seats: { type: [String], required: true },
   paid: { type: Boolean, required: true },

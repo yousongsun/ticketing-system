@@ -10,7 +10,7 @@ const router = express.Router();
 
 interface CreateOrderRequest extends Request {
   body: {
-    userID: string;
+    email: string;
     numberOfTickets: number;
     seats: string[];
     paid: boolean;
@@ -33,11 +33,11 @@ router.post(
     // data: {
     //  orderID: ObjectID
     // }
-    const { userID, numberOfTickets, seats } = req.body;
+    const { email, numberOfTickets, seats } = req.body;
     // Check for missing fields
-    if (!userID) {
+    if (!email) {
       res.status(400).json({
-        error: 'Missing user id',
+        error: 'Missing email',
       });
       return;
     }
@@ -75,7 +75,7 @@ router.post(
         `${Number.parseInt(number, 10)}${letter.toUpperCase()}`;
     }
 
-    const order = await createOrder(userID, numberOfTickets, formattedSeats);
+    const order = await createOrder(email, numberOfTickets, formattedSeats);
     if (!order) {
       res.status(500).json({
         error: 'Unable to save document to database',
@@ -97,35 +97,28 @@ router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
   // and returns the order information
   // ------------------------------------
   // ROUTE BODY:
-  // orderID (ObjectID): ID of the order
+  // email (string): ID of the order
   // ------------------------------------
   // ROUTE RETURN:
   // data: {
   // orderID: ObjectID
-  // userID: ObjectID
+  // email: email
   // numberOfTickets: int
   // seats: seats[]
   // paid: boolean
   // }
   // ------------------------------------
-  const { orderID } = req.body;
+  const { email } = req.body;
   // The user does not provide a order id on the route
-  if (!orderID) {
+  if (!email) {
     res.status(400).json({
-      error: 'Missing the order id',
+      error: 'Missing the email',
     });
     return;
   }
   // Check if valid id for mongoose
-  const isValidID = mongoose.Types.ObjectId.isValid(orderID);
-  if (!isValidID) {
-    res.status(400).json({
-      error: 'Incorrect orderID format',
-    });
-    return;
-  }
   // Find the order in the DB
-  const order = await retrieveOrder(orderID);
+  const order = await retrieveOrder(email);
   // If the order exists return the information
   if (order) {
     res.status(200).json({
@@ -135,7 +128,7 @@ router.get('/get-order', async (req: Request, res: Response): Promise<void> => {
   }
   // If the order doesn't exist, exit on 404
   res.status(404).json({
-    error: 'OrderID not in database',
+    error: 'Email not in database',
   });
 });
 
@@ -146,7 +139,7 @@ router.patch(
     // and updates the order to paid
     // ------------------------------------
     // ROUTE BODY:
-    // orderID (ObjectID): ID of the order
+    // email (email): Email of the order
     // ------------------------------------
     // ROUTE RETURN:
     // data: {
@@ -157,24 +150,17 @@ router.patch(
     // paid: boolean
     // }
     // ------------------------------------
-    const { orderID } = req.body;
-    if (!orderID) {
+    const { email } = req.body;
+    if (!email) {
       res.status(400).json({
-        error: 'Missing the order id',
+        error: 'Missing the email',
       });
       return;
     }
-    const isValidID = mongoose.Types.ObjectId.isValid(orderID);
-    if (!isValidID) {
-      res.status(400).json({
-        error: 'Incorrect orderID format',
-      });
-      return;
-    }
-    const order = await updateOrderPaid(orderID);
+    const order = await updateOrderPaid(email);
     if (!order) {
       res.status(404).json({
-        error: 'OrderID not in database',
+        error: 'Email not in database',
       });
       return;
     }
