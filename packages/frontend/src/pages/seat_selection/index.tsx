@@ -115,7 +115,7 @@ const SeatSelectionPage: React.FC = () => {
                               seat.seatType.slice(1)}
                           </span>
                           <span className="text-white font-bold ml-4">
-                            Row {seat.rowLabel} Number {seat.number}
+                            Row {seat.rowLabel} Seat {seat.number}
                           </span>
                         </div>
                         <div>

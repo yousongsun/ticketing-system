@@ -19,6 +19,10 @@ router.use('/seats', seatRoutes);
 import ordersRoutes from './api-orders';
 router.use('/order', ordersRoutes);
 
+// Import payment route
+import stripeRoutes from './api-stripe';
+router.use('/stripe', stripeRoutes);
+
 //import webhookRoutes from './webhook-routes';
 //router.use('/webhooks', webhookRoutes);
 
