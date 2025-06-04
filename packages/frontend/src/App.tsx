@@ -6,9 +6,9 @@ import { LoadingComponent } from './components/LoadingComponent';
 import { Menu } from './components/Menu';
 import HomePage from './pages/Home';
 import { SponsorPage } from './pages/SponsorPage';
+import SuccessPage from './pages/SuccessPage';
 import UserDetail from './pages/UserDetail';
 import SeatSelectionPage from './pages/seat_selection';
-
 
 const App: React.FC = () => {
   return (
@@ -60,7 +60,7 @@ const App: React.FC = () => {
           }
         />
         <Route
-          path="sponsor"
+          path="sponsors"
           element={
             <>
               <Menu />
@@ -76,7 +76,24 @@ const App: React.FC = () => {
             </Link>
           }
         />
-        <Route path="/user-detail" element={<UserDetail />} />
+        <Route
+          path="/user-detail"
+          element={
+            <>
+              <Menu />
+              <UserDetail />
+            </>
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            <>
+              <Menu />
+              <SuccessPage />
+            </>
+          }
+        />
       </Routes>
       <Footer />
     </>

@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SeatPlanning } from '../../components/SeatPlanning';
 import type { AppDispatch, RootState } from '../../redux/store';
 import './SeatSelectionStyles.css';
+import { useNavigate } from 'react-router';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import type { Seat } from '../../components/SeatPlanning/SeatPlanning';
 import { toggleSeatSelection } from '../../redux/slices/seatSelectionSlice';
 
 const SeatSelectionPage: React.FC = () => {
+  const navigate = useNavigate();
   const [recentlyAddedIds, setRecentlyAddedIds] = useState<string[]>([]);
   const prevSeatIdsRef = useRef<string[]>([]);
 
@@ -84,7 +86,7 @@ const SeatSelectionPage: React.FC = () => {
           {/* Page Headings */}
           <div>
             <h2 className="text-[#FFF0A2] font-bold text-md text-right tracking-wide">
-              7th August | 05:00 - 06:30 pm
+              14 Aug, 7:30pm - 16 Aug, 10:30 pm
             </h2>
             <h1 className="text-[#E5CE63] font-black text-xl text-right tracking-widest">
               BACK TO THE SUTURE
@@ -92,48 +94,59 @@ const SeatSelectionPage: React.FC = () => {
           </div>
           {/* Display list of selected seats */}
           {selectedSeats.length > 0 ? (
-            <div className="text-white text-lg w-full h-full">
-              <h2 className="text-lg font-bold mb-4">Selected Seats:</h2>
-              <ul className="list-inside w-full overflow-y-auto overflow-x-hidden h-[80%] scroll-smooth">
-                {selectedSeats.map((seat) => {
-                  const seatId = `${seat.rowLabel}-${seat.number}`;
-                  const isJustAdded = recentlyAddedIds.includes(seatId);
+            <div>
+              <div className="text-white text-lg w-full h-full">
+                <h2 className="text-lg font-bold mb-4">Selected Seats:</h2>
+                <ul className="list-inside w-full overflow-y-auto overflow-x-hidden h-[80%] scroll-smooth">
+                  {selectedSeats.map((seat) => {
+                    const seatId = `${seat.rowLabel}-${seat.number}`;
+                    const isJustAdded = recentlyAddedIds.includes(seatId);
 
-                  return (
-                    <li
-                      key={seatId}
-                      className={`text-lg relative text-white border-gray-700 border-3 w-full px-4 py-2 rounded-2xl mb-2 ${isJustAdded ? 'fade-in-up hidden-before-animation' : ''}`}
-                    >
-                      <div>
-                        <span
-                          className={`${
-                            seat.seatType === 'vip'
-                              ? 'text-[#E5CE63]'
-                              : 'text-white'
-                          } font-bold`}
-                        >
-                          {seat.seatType.charAt(0).toUpperCase() +
-                            seat.seatType.slice(1)}
-                        </span>
-                        <span className="text-white font-bold ml-4">
-                          Row {seat.rowLabel} Number {seat.number}
-                        </span>
-                      </div>
-                      <div>
-                        <button
-                          type="button"
-                          className="absolute right-4 top-2 text-red-200 hover:text-red-400 font-black cursor-pointer"
-                          onClick={() => {
-                            handleDeselectSeat(seat);
-                          }}
-                        >
-                          X
-                        </button>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+                    return (
+                      <li
+                        key={seatId}
+                        className={`text-lg relative text-white border-gray-700 border-3 w-full px-4 py-2 rounded-2xl mb-2 ${isJustAdded ? 'fade-in-up hidden-before-animation' : ''}`}
+                      >
+                        <div>
+                          <span
+                            className={`${
+                              seat.seatType === 'vip'
+                                ? 'text-[#E5CE63]'
+                                : 'text-white'
+                            } font-bold`}
+                          >
+                            {seat.seatType.charAt(0).toUpperCase() +
+                              seat.seatType.slice(1)}
+                          </span>
+                          <span className="text-white font-bold ml-4">
+                            Row {seat.rowLabel} Number {seat.number}
+                          </span>
+                        </div>
+                        <div>
+                          <button
+                            type="button"
+                            className="absolute right-4 top-2 text-red-200 hover:text-red-400 font-black cursor-pointer"
+                            onClick={() => {
+                              handleDeselectSeat(seat);
+                            }}
+                          >
+                            X
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <button
+                type="button"
+                className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2"
+                onClick={() => {
+                  navigate('/user-detail');
+                }}
+              >
+                Pay the seats
+              </button>
             </div>
           ) : (
             <span className="text-white text-lg font-bold">
