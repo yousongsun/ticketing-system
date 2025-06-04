@@ -1,22 +1,22 @@
 import Order from '../models/order';
-export async function retrieveOrder(orderID: string) {
-  return await Order.findById(orderID);
+export async function retrieveOrder(email: string) {
+  return await Order.findOne({ email: email });
 }
 
-export async function updateOrderPaid(orderID: string) {
-  const filter = { _id: orderID };
+export async function updateOrderPaid(email: string) {
+  const filter = { email: email };
   const update = { paid: true };
   const doc = await Order.findOneAndUpdate(filter, update, { new: true });
   return doc;
 }
 
 export async function createOrder(
-  userID: string,
+  email: string,
   numberOfTickets: number,
   seats: string[],
 ) {
   const order = new Order({
-    userID,
+    email,
     numberOfTickets,
     seats,
     paid: false,
