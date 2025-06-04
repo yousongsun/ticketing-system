@@ -5,12 +5,12 @@
 
 import type React from 'react';
 
-import medworldLogo from '/src/assets/medworld.svg';
-import mpsLogo from '/src/assets/mps.svg';
-import pizzaclubLogo from '/src/assets/pizza-club.svg';
-import respmedLogo from '/src/assets/respmed.svg';
-import tamakihealthLogo from '/src/assets/tamaki-health.svg';
-import weLogo from '/src/assets/we.svg';
+import medworldLogo from '../../assets/medworld.svg';
+import mpsLogo from '../../assets/mps.svg';
+import pizzaclubLogo from '../../assets/pizza-club.svg';
+import respmedLogo from '../../assets/respmed.svg';
+import tamakihealthLogo from '../../assets/tamaki-health.svg';
+import weLogo from '../../assets/we.svg';
 
 export const Sponsors: React.FC = () => {
   return (
