@@ -82,7 +82,7 @@ const UserDetail: React.FC = () => {
       <div className="max-w-6xl w-full p-2 relative z-10">
         <div className="flex justify-between items-end px-10 mb-40">
           <h1 className="text-[#FFFBE8] font-bold leading-none">
-            Tell us about yourself
+            Enter your contact details
           </h1>
 
           <div className="w-[40%] bg-[#070507] rounded-xl p-4 flex flex-col gap-y-2 justify-end">

@@ -310,7 +310,7 @@ const HomePage: React.FC = () => {
               height="57"
               rx="9.5"
               stroke="#FFFBE8"
-              stroke-width="3"
+              strokeWidth="3"
             />
             <title>Buy Tickets Button</title>
             <path

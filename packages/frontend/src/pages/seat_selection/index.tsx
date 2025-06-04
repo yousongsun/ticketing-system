@@ -2,27 +2,23 @@ import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SeatPlanning } from '../../components/SeatPlanning';
-import type { AppDispatch, RootState } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import './SeatSelectionStyles.css';
 import { useNavigate } from 'react-router';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import type { Seat } from '../../components/SeatPlanning/SeatPlanning';
-import { toggleSeatSelection } from '../../redux/slices/seatSelectionSlice';
+import {
+  selectSelectedSeats,
+  toggleSeatSelection,
+} from '../../redux/slices/seatSelectionSlice';
 
 const SeatSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [recentlyAddedIds, setRecentlyAddedIds] = useState<string[]>([]);
   const prevSeatIdsRef = useRef<string[]>([]);
 
-  // Get seat data from Redux
-  const seatData = useSelector(
-    (state: RootState) => state.seatSelection.seatData,
-  );
-
-  // Flatten the seat data to get all selected seats
-  const selectedSeats = Object.values(seatData).flatMap((row: Seat[]) =>
-    row.filter((seat) => seat.selected),
-  );
+  // Get selected seats using the selector
+  const selectedSeats = useSelector(selectSelectedSeats);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -31,7 +27,7 @@ const SeatSelectionPage: React.FC = () => {
     dispatch(toggleSeatSelection(seat));
   };
 
-  // Hande animation of newly selected seats
+  // Handle animation of newly selected seats
   useEffect(() => {
     const currentSeatIds = selectedSeats.map(
       (seat) => `${seat.rowLabel}-${seat.number}`,
@@ -140,12 +136,13 @@ const SeatSelectionPage: React.FC = () => {
               </div>
               <button
                 type="button"
-                className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2"
+                className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2 sticky bottom-4"
                 onClick={() => {
+                  console.log('Selected Seats:', selectedSeats);
                   navigate('/user-detail');
                 }}
               >
-                Pay the seats
+                Next Step →
               </button>
             </div>
           ) : (
