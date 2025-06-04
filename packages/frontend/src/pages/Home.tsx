@@ -1,19 +1,204 @@
-// src/pages/Home.tsx
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type React from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import medrevueHomeBackground from '../assets/medrevue-home-background.png';
 import medrevuePoster from '../assets/medrevue-poster.png';
 import { Button } from '../components/Button';
+gsap.registerPlugin(ScrollTrigger);
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const secondSectionRef = useRef<HTMLDivElement | null>(null);
 
+  // GSAP Animation Ref definitions
+  const bgRef = useRef<HTMLDivElement>(null);
+  const headerSlideRef = useRef(null);
+  const divFadeInRef = useRef(null);
+  const h2FadeInRef = useRef(null);
+  const posterRef = useRef(null);
+  const TextZoomRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+
+  // Effect for background image zoom on opening
+
+  useEffect(() => {
+    if (bgRef.current) {
+      gsap.to(bgRef.current, {
+        scale: 1.1,
+        duration: 3,
+        ease: 'power1.out',
+        transformOrigin: 'center center',
+        repeat: 0,
+        yoyo: false,
+      });
+    }
+  }, []);
+
+  // Effect for 'Back To The Suture' word by word slide in
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    // Split the text into words and wrap them in spans
+    const text = el.textContent || '';
+    el.innerHTML = '';
+
+    const words = text.split(' ');
+    const fragment = document.createDocumentFragment();
+
+    words.forEach((word, index) => {
+      const span = document.createElement('span');
+      span.textContent = word + (index < words.length - 1 ? ' ' : '');
+      span.style.display = 'inline-block';
+      span.style.whiteSpace = 'pre'; // preserve spaces
+      fragment.appendChild(span);
+    });
+
+    el.appendChild(fragment);
+
+    const spans = el.querySelectorAll('span');
+
+    // Animate: slide in from right
+    gsap.fromTo(
+      spans,
+      { x: 50, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Simplified fade/slide-in animation for header
+  useEffect(() => {
+    if (!headerSlideRef.current) return;
+
+    gsap.fromTo(
+      headerSlideRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: headerSlideRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Effect for bottom page text and secondary header - slide and fade in from the right
+
+  useEffect(() => {
+    // Div animation
+    gsap.fromTo(
+      divFadeInRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: divFadeInRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+
+    // H2 animation
+    gsap.fromTo(
+      h2FadeInRef.current,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: h2FadeInRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Zoom in and rotate poster image on scroll
+
+  useEffect(() => {
+    if (!posterRef.current) return;
+
+    gsap.fromTo(
+      posterRef.current,
+      { scale: 0.8, rotateY: 45, opacity: 0 },
+      {
+        scale: 1,
+        rotateY: 0,
+        opacity: 1,
+        duration: 2,
+        delay: 0.4,
+        ease: 'power4.out',
+        scrollTrigger: {
+          trigger: posterRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      },
+    );
+  }, []);
+
+  // Effect for text info zoom on hover
+
+  useEffect(() => {
+    if (!TextZoomRef.current) return;
+
+    const h2Elements = TextZoomRef.current.querySelectorAll('h2');
+
+    for (const el of h2Elements) {
+      // on mouse enter, scale up
+      el.addEventListener('mouseenter', () => {
+        el.style.transform = 'scale(1.2)';
+        el.style.transition = 'transform 0.3s ease-in-out';
+      });
+
+      // on mouse leave, scale back
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'scale(1)';
+      });
+    }
+
+    // Cleanup listeners on unmount
+    return () => {
+      for (const el of h2Elements) {
+        el.removeEventListener('mouseenter', () => {});
+        el.removeEventListener('mouseleave', () => {});
+      }
+    };
+  }, []);
+
+  // Page Content
+
   return (
     <div className="overflow-y-auto">
       {/* Hero Section */}
       <section
+        ref={bgRef}
         className="relative min-h-screen w-full bg-no-repeat lg:bg-bottom bg-center bg-cover bg-[#070507]"
         style={{
           backgroundImage: `url(${medrevueHomeBackground})`,
@@ -69,21 +254,31 @@ const HomePage: React.FC = () => {
         className="relative h-screen bg-[#070507] flex h-[200vh] sm:h-screen overflow-y-auto sm:overflow-hidden"
       >
         <img
+          ref={posterRef}
           src={medrevuePoster}
           alt="2025 MedRevue Poster - Back To The Suture"
           className="absolute top-[37%] left-[5%] w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40"
         />
 
         <div className="absolute right-[10%] top-[7%] text-right lg:translate-y-22">
-          <h2 className="text-[#FFF0A2] font-inter font-medium text-xl mb-4 text-[clamp(1.25rem,3vw,1.3rem)]">
+          <h2
+            ref={h2FadeInRef}
+            className="text-[#FFF0A2] font-inter font-medium text-xl mb-4 text-[clamp(1.25rem,3vw,1.3rem)]"
+          >
             Our 2025 Show
           </h2>
 
-          <h1 className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] mb-8 text-[clamp(2.1rem,8vw,3.75rem)]">
+          <h1
+            ref={textRef}
+            className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] mb-8 text-[clamp(2.1rem,8vw,3.75rem)]"
+          >
             BACK TO THE SUTURE
           </h1>
 
-          <div className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15">
+          <div
+            ref={divFadeInRef}
+            className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15"
+          >
             <p>
               Our take on the classic: Back to the Future. Very exciting show
               blurb here, lorem ipsum etc. etcetera etcetera
@@ -125,7 +320,10 @@ const HomePage: React.FC = () => {
           </svg>
         </Button>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#FFFBE8] transform font-inter font-semibold text-center flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 lg:flex-row lg:space-y-0 lg:space-x-15 lg:bottom-auto lg:top-[85%] text-[clamp(1.125rem,4vw,1.875rem)]">
+        <div
+          ref={TextZoomRef}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#FFFBE8] transform font-inter font-semibold text-center flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 lg:flex-row lg:space-y-0 lg:space-x-15 lg:bottom-auto lg:top-[85%] text-[clamp(1.125rem,4vw,1.875rem)]"
+        >
           <h2> 14 Aug, 7:30pm - 16 Aug, 10:30 pm </h2>
 
           <h2> Sky City Theatre </h2>

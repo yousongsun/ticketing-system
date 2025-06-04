@@ -5,12 +5,12 @@
 
 import type React from 'react';
 
-import medworldLogo from '../../assets/medworld.svg';
-import mpsLogo from '../../assets/mps.svg';
-import pizzaclubLogo from '../../assets/pizza-club.svg';
-import respmedLogo from '../../assets/respmed.svg';
-import tamakihealthLogo from '../../assets/tamaki-health.svg';
-import weLogo from '../../assets/we.svg';
+import medworldLogo from '../../assets/medworld.png';
+import mpsLogo from '../../assets/mps.png';
+import pizzaclubLogo from '../../assets/pizza-club.png';
+import respmedLogo from '../../assets/respmed.png';
+import tamakihealthLogo from '../../assets/tamaki-health.png';
+import weLogo from '../../assets/we.png';
 
 export const Sponsors: React.FC = () => {
   return (
@@ -25,7 +25,7 @@ export const Sponsors: React.FC = () => {
         <img
           src={weLogo}
           alt="We Getting to the Guts of it"
-          className="md:h-40 h-25 object-contain mx-auto"
+          className="md:h-40 h-25 object-contain mx-auto bg-white"
         />
       </div>
 
@@ -37,12 +37,12 @@ export const Sponsors: React.FC = () => {
           <img
             src={respmedLogo}
             alt="RESPMED"
-            className="md:w-30 md:h-30 w-20 h-20 object-contain"
+            className="md:w-30 md:h-30 w-20 h-20 object-contain bg-white"
           />
           <img
             src={tamakihealthLogo}
             alt="Tamaki Health"
-            className="md:w-30 md:h-30 w-20 h-20 object-contain"
+            className="md:w-30 md:h-30 w-20 h-20 object-contain bg-white"
           />
         </div>
       </div>
@@ -54,7 +54,7 @@ export const Sponsors: React.FC = () => {
         <img
           src={pizzaclubLogo}
           alt="Pizza Club"
-          className="md:h-20 h-10 object-contain mx-auto"
+          className="md:h-20 h-10 object-contain mx-auto bg-white"
         />
       </div>
 
@@ -66,12 +66,12 @@ export const Sponsors: React.FC = () => {
           <img
             src={medworldLogo}
             alt="MedWorld Institute"
-            className="md:h-20 h-10 object-contain"
+            className="md:h-20 h-10 object-contain bg-white"
           />
           <img
             src={mpsLogo}
             alt="MPS"
-            className="md:h-20 h-10 object-contain"
+            className="md:h-20 h-10 object-contain bg-white"
           />
         </div>
       </div>
