@@ -1,3 +1,5 @@
+import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -11,6 +13,9 @@ type FormData = {
 };
 
 type FormDataWithId = FormData & { id: string };
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 const initialFormState: FormData = {
   firstName: '',
@@ -26,7 +31,7 @@ const initialFormStateWithId = (id: string): FormDataWithId => ({
 
 const UserDetail: React.FC = () => {
   const navigate = useNavigate();
-  const [numberOfSeats] = useState(1); // number of seats
+  const [numberOfSeats] = useState(2); // number of seats
   const [formStates, setFormStates] = useState<FormDataWithId[]>(
     Array.from({ length: numberOfSeats }, (_, i) =>
       initialFormStateWithId(`ticket-${Date.now()}-${i}`),
@@ -69,6 +74,52 @@ const UserDetail: React.FC = () => {
     if (!hasErrors) {
       console.log('All forms submitted:', formStates);
       setSubmitted(true);
+      const payload = {
+        lineItems: [
+          {
+            name: 'Row A Seat 18',
+            price: 60.0,
+            quantity: 1,
+          },
+          {
+            name: 'Row C Seat 6',
+            price: 60.0,
+            quantity: 1,
+          },
+          {
+            name: 'VIP Row A Seat 12',
+            price: 120.0,
+            quantity: 1,
+          },
+        ],
+        successUrl: 'http://localhost:5173/success',
+        cancelUrl: 'http://localhost:5173/cancel',
+      };
+
+      axios
+        .post(`${API_BASE_URL}/api/v1/stripe/checkout-session`, payload)
+        .then(async (response) => {
+          const { sessionId } = response.data;
+
+          const stripe = await loadStripe(
+            import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
+          );
+
+          if (stripe) {
+            const { error } = await stripe.redirectToCheckout({ sessionId });
+            if (error) {
+              console.error('Stripe checkout error:', error);
+              setSubmitted(false);
+            }
+          } else {
+            console.error('Stripe.js failed to load');
+            setSubmitted(false);
+          }
+        })
+        .catch((error) => {
+          console.error('Error submitting form:', error);
+          setSubmitted(false);
+        });
     } else {
       setSubmitted(false);
     }
@@ -117,7 +168,6 @@ const UserDetail: React.FC = () => {
           <button
             type="submit"
             className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2]"
-            onClick={() => navigate('/success')}
           >
             Submit
           </button>
