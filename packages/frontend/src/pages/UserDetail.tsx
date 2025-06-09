@@ -2,7 +2,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { TicketForm } from '../components/TicketForm';
 
 type FormData = {
@@ -30,7 +29,6 @@ const initialFormStateWithId = (id: string): FormDataWithId => ({
 });
 
 const UserDetail: React.FC = () => {
-  const navigate = useNavigate();
   const [numberOfSeats] = useState(2); // number of seats
   const [formStates, setFormStates] = useState<FormDataWithId[]>(
     Array.from({ length: numberOfSeats }, (_, i) =>
@@ -92,8 +90,8 @@ const UserDetail: React.FC = () => {
             quantity: 1,
           },
         ],
-        successUrl: 'http://localhost:5173/success',
-        cancelUrl: 'http://localhost:5173/cancel',
+        successUrl: 'https://www.medrevue.co.nz/success',
+        cancelUrl: 'https://www.medrevue.co.nz/cancel',
       };
 
       axios

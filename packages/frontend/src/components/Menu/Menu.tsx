@@ -30,7 +30,7 @@ export const Menu: React.FC = () => {
           Sponsors
         </Link>
         <a
-          href="https://msf.org.nz/donatenow?src=www.medrevue.co.nz"
+          href="https://fundraise.msf.org.au/fundraisers/aucklandmedicalrevue/auckland-medical-revue?utm_source=qr&utm_medium=print"
           target="_blank"
           rel="noopener noreferrer"
           className="font-inter text-2xl font-normal leading-[36px] text-[#cccccc] no-underline transition-colors duration-300 hover:text-[#e5ce63]"
