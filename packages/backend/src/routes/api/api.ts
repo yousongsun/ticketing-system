@@ -17,7 +17,7 @@ router.use('/seats', seatRoutes);
 
 // Import order route
 import ordersRoutes from './api-orders';
-router.use('/order', ordersRoutes);
+router.use('/orders', ordersRoutes);
 
 // Import payment route
 import stripeRoutes from './api-stripe';

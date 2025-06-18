@@ -1,17 +1,22 @@
-import mongoose, { Schema, model, type Document } from 'mongoose';
+import type { OrderType } from '@medrevue/types';
+import mongoose, { Schema, type Document, type Model } from 'mongoose';
 
-interface Order extends Document {
-  email: string;
-  numberOfTickets: number;
-  seats: string[];
-  paid: boolean;
-}
+interface IOrder extends OrderType, Document {}
 
-const orderSchema = new Schema<Order>({
-  email: { type: String, required: true },
-  numberOfTickets: { type: Number, required: true },
-  seats: { type: [String], required: true },
-  paid: { type: Boolean, required: true },
-});
+const orderSchema: Schema<IOrder> = new Schema(
+  {
+    email: { type: String, required: true },
+    dateOfShow: { type: String, required: true },
+    numberOfTickets: { type: Number, required: true },
+    seats: { type: [String], required: true },
+    paid: { type: Boolean, required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-export default model<Order>('Order', orderSchema);
+const Order: Model<IOrder> =
+  mongoose.models.Order || mongoose.model<IOrder>('Order', orderSchema);
+
+export { Order, type IOrder };

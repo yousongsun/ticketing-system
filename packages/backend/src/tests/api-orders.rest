@@ -1,0 +1,35 @@
+@baseUrl = http://localhost:3000/api/v1
+
+# @title Create Order
+# @description This endpoint creates a new order in the system.
+POST {{baseUrl}}/orders/
+content-type: application/json
+
+{
+ "userID": "45",
+ "numberOfTickets": 4,
+ "email": "test@test.com",
+ "dateOfShow": "2025-08-15",
+ "seats" : ["21B","21C", "24B", "30X"]
+}
+
+###
+GET {{baseUrl}}/orders/6852984f21b27619a0fa2b32
+Content-Type: application/json
+
+### 
+PATCH {{baseUrl}}/orders/order-paid
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "orderID": "685298f021b27619a0fa2b49"
+}
+
+### 
+PUT {{baseUrl}}/orders/685298f021b27619a0fa2b49
+Content-Type: application/json
+
+{
+    "paid": true
+}
