@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   initializeSeatData,
+  setSelectedDate,
   toggleSeatSelection,
 } from '../../redux/slices/seatSelectionSlice';
 import type { AppDispatch, RootState } from '../../redux/store';
@@ -29,6 +30,13 @@ export const SeatPlanning: React.FC = () => {
   const rowXOffsets: { [key: string]: number } = {};
 
   const dispatch = useDispatch<AppDispatch>();
+  // Use Redux for showDates and selectedDate
+  const showDates = useSelector(
+    (state: RootState) => state.seatSelection.showDates,
+  );
+  const selectedDate = useSelector(
+    (state: RootState) => state.seatSelection.selectedDate,
+  );
   const seatData = useSelector(
     (state: RootState) => state.seatSelection.seatData,
   );
@@ -95,6 +103,20 @@ export const SeatPlanning: React.FC = () => {
   return (
     <div className="flex flex-col items-center w-full">
       {/* Stage container */}
+      <div className="flex flex-row gap-4 mb-16 w-full h-20 text-white rounded-t-xl items-center justify-center">
+        {showDates.map((date, idx) => (
+          <button
+            key={date.value}
+            className={`px-8 py-4 text-white rounded transition ${
+              selectedDate === date.value ? 'bg-blue-500' : 'bg-gray-700'
+            } hover:bg-gray-600`}
+            type="button"
+            onClick={() => dispatch(setSelectedDate(date.value))}
+          >
+            {date.label}
+          </button>
+        ))}
+      </div>
       <div className="w-[32%] h-20 text-white bg-gray-700 rounded-t-xl flex items-center justify-center">
         <span className="text-gray-400 text-xl font-bold tracking-widest">
           Stage

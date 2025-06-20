@@ -25,6 +25,14 @@ const SeatSelectionPage: React.FC = () => {
     row.filter((seat) => seat.selected),
   );
 
+  // Get showDates and selectedDate from Redux
+  const showDates = useSelector(
+    (state: RootState) => state.seatSelection.showDates,
+  );
+  const selectedDate = useSelector(
+    (state: RootState) => state.seatSelection.selectedDate,
+  );
+
   const dispatch = useDispatch<AppDispatch>();
 
   // Handle deselecting a seat
@@ -87,7 +95,8 @@ const SeatSelectionPage: React.FC = () => {
           {/* Page Headings */}
           <div>
             <h2 className="text-[#FFF0A2] font-bold text-md text-right tracking-wide">
-              14 Aug, 7:30pm - 16 Aug, 10:30 pm
+              {showDates.find((d) => d.value === selectedDate)?.label ||
+                showDates[0].label}
             </h2>
             <h1 className="text-[#E5CE63] font-black text-xl text-right tracking-widest">
               BACK TO THE SUTURE

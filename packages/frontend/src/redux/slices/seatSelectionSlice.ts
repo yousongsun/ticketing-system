@@ -7,11 +7,21 @@ import type {
 interface SeatSelectionState {
   seatData: SeatData;
   initialized: boolean;
+  selectedDate: string;
+  showDates: { label: string; value: string }[];
 }
+
+export const SHOW_DATES = [
+  { label: '14 Aug, 7:30pm - 10:30pm', value: '2024-08-14' },
+  { label: '15 Aug, 7:30pm - 10:30pm', value: '2024-08-15' },
+  { label: '16 Aug, 7:30pm - 10:30pm', value: '2024-08-16' },
+];
 
 const initialState: SeatSelectionState = {
   seatData: {},
   initialized: false,
+  selectedDate: SHOW_DATES[0].value,
+  showDates: SHOW_DATES,
 };
 
 const seatSelectionSlice = createSlice({
@@ -28,9 +38,12 @@ const seatSelectionSlice = createSlice({
         seat.number === number ? { ...seat, selected: !seat.selected } : seat,
       );
     },
+    setSelectedDate: (state, action: PayloadAction<string>) => {
+      state.selectedDate = action.payload;
+    },
   },
 });
 
-export const { initializeSeatData, toggleSeatSelection } =
+export const { initializeSeatData, toggleSeatSelection, setSelectedDate } =
   seatSelectionSlice.actions;
 export default seatSelectionSlice.reducer;
