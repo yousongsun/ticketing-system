@@ -32,9 +32,13 @@ Content-Type: application/json
         }
     ],
     "successUrl": "http://localhost:3000/success",
-    "cancelUrl": "http://localhost:3000/cancel"
+    "cancelUrl": "http://localhost:3000/cancel",
+    "expires_at": 1750416857
 }
 
 ### Get the status of a checkout session
-GET {{baseUrl}}/stripe/checkout-session/{sessionId}
+GET {{baseUrl}}/stripe/checkout-session/{:sessionId}
 Content-Type: application/json
+
+### Expired checkout session
+GET {{baseUrl}}/stripe/checkout-session/{:sessionId}/expireme

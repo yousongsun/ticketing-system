@@ -51,7 +51,7 @@ router.post(
   '/checkout-session',
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const { lineItems, successUrl, cancelUrl } = req.body;
+      const { lineItems, successUrl, cancelUrl, expires_at } = req.body;
 
       if (!Array.isArray(lineItems) || lineItems.length === 0) {
         res.status(400).json({ message: 'Invalid line items' });
@@ -80,6 +80,7 @@ router.post(
         mode: 'payment',
         success_url: successUrl,
         cancel_url: cancelUrl,
+        expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       });
 
       res.status(201).json({ sessionId: session.id });
@@ -120,6 +121,38 @@ router.get(
         console.error('Stripe Checkout Session retrieval error:', error);
       }
       res.status(500).json({ message: 'Failed to retrieve checkout session' });
+    }
+  },
+);
+
+router.get(
+  '/checkout-session/:sessionId/expireme',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { sessionId } = req.params;
+      if (!sessionId) {
+        res.status(400).json({ message: 'Session ID is required' });
+        return;
+      }
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (!session) {
+        res.status(404).json({ message: 'Session not found' });
+        return;
+      }
+
+      // Expire the session
+      await stripe.checkout.sessions.expire(sessionId);
+      res.status(200).json({ message: 'Session expired successfully' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(
+          'Stripe Checkout Session expiration error:',
+          error.message,
+        );
+      } else {
+        console.error('Stripe Checkout Session expiration error:', error);
+      }
+      res.status(500).json({ message: 'Failed to expire checkout session' });
     }
   },
 );

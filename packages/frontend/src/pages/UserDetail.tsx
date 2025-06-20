@@ -2,98 +2,93 @@ import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import type { Seat } from '../components/SeatPlanning/SeatPlanning';
 import { TicketForm } from '../components/TicketForm';
-
-type FormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-};
-
-type FormDataWithId = FormData & { id: string };
+import type { RootState } from '../redux/store';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
-const initialFormState: FormData = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-};
-
-const initialFormStateWithId = (id: string): FormDataWithId => ({
-  ...initialFormState,
-  id,
-});
-
 const UserDetail: React.FC = () => {
   const navigate = useNavigate();
-  const [numberOfSeats] = useState(2); // number of seats
-  const [formStates, setFormStates] = useState<FormDataWithId[]>(
-    Array.from({ length: numberOfSeats }, (_, i) =>
-      initialFormStateWithId(`ticket-${Date.now()}-${i}`),
-    ),
-  );
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof FormData, string>>[]
-  >([]);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isStudent, setIsStudent] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const validateForm = (data: FormData) => {
-    const newErrors: Partial<Record<keyof FormData, string>> = {};
-    if (!data.firstName) newErrors.firstName = 'First name is required';
-    if (!data.lastName) newErrors.lastName = 'Last name is required';
-    if (!data.email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(data.email))
-      newErrors.email = 'Invalid email format';
-    if (!data.phone) newErrors.phone = 'Phone number is required';
-    return newErrors;
-  };
+  // Get showDates, selectedDate, and seatData from Redux
+  const showDates = useSelector(
+    (state: RootState) => state.seatSelection.showDates,
+  );
+  const selectedDate = useSelector(
+    (state: RootState) => state.seatSelection.selectedDate,
+  );
+  const seatData = useSelector(
+    (state: RootState) => state.seatSelection.seatData,
+  );
+  // Flatten the seat data to get all selected seats
+  const selectedSeats = Object.values(seatData).flatMap((row: Seat[]) =>
+    row.filter((seat) => seat.selected),
+  );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const { name, value } = e.target;
-    setFormStates((prev) =>
-      prev.map((form, i) => (i === index ? { ...form, [name]: value } : form)),
-    );
+  // Calculate total price with student discount
+  const vipPrice = isStudent ? 70 : 80;
+  const normalPrice = isStudent ? 50 : 60;
+  const vipCount = selectedSeats.filter(
+    (seat) => seat.seatType === 'vip',
+  ).length;
+  const normalCount = selectedSeats.filter(
+    (seat) => seat.seatType === 'normal',
+  ).length;
+  const totalPrice = vipCount * vipPrice + normalCount * normalPrice;
+
+  const validateForm = () => {
+    const newErrors: Partial<Record<string, string>> = {};
+    if (!firstName) newErrors.firstName = 'First name is required';
+    if (!lastName) newErrors.lastName = 'Last name is required';
+    if (!email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(email))
+      newErrors.email = 'Invalid email format';
+    if (!phone) newErrors.phone = 'Phone number is required';
+    return newErrors;
   };
 
   const handleSubmitAll = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationResults = formStates.map(validateForm);
+    const validationResults = validateForm();
     setErrors(validationResults);
-
-    const hasErrors = validationResults.some(
-      (res) => Object.keys(res).length > 0,
-    );
-    if (!hasErrors) {
-      console.log('All forms submitted:', formStates);
+    const hasErrors = Object.keys(validationResults).length > 0;
+    if (!hasErrors && selectedSeats.length > 0) {
       setSubmitted(true);
+      const formPayload = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        isStudent,
+        selectedSeats,
+        totalPrice,
+      };
+      console.log('Form submitted:', formPayload);
+
+      const selectedDateLabel =
+        showDates.find((d) => d.value === selectedDate)?.label ||
+        showDates[0].label;
+
       const payload = {
-        lineItems: [
-          {
-            name: 'Row A Seat 18',
-            price: 60.0,
-            quantity: 1,
-          },
-          {
-            name: 'Row C Seat 6',
-            price: 60.0,
-            quantity: 1,
-          },
-          {
-            name: 'VIP Row A Seat 12',
-            price: 120.0,
-            quantity: 1,
-          },
-        ],
+        lineItems: selectedSeats.map((seat) => ({
+          name: `${seat.seatType === 'vip' ? 'VIP ' : ''}Row ${seat.rowLabel} Seat ${seat.number} (${selectedDateLabel})`,
+          price: seat.seatType === 'vip' ? vipPrice : normalPrice,
+          quantity: 1,
+        })),
         successUrl: 'https://www.medrevue.co.nz/success',
         cancelUrl: 'https://www.medrevue.co.nz/cancel',
+        expires_at: Math.floor(Date.now() / 1000) + 600,
       };
 
       axios
@@ -131,52 +126,135 @@ const UserDetail: React.FC = () => {
       className="min-h-screen bg-[#070507] flex flex-col items-center justify-center p-8 relative overflow-hidden"
     >
       <div className="max-w-6xl w-full p-2 relative z-10">
-        <div className="flex justify-between items-end px-10 mb-40">
-          <h1 className="text-[#FFFBE8] font-bold leading-none">
-            Enter your contact details
-          </h1>
-
-          <div className="w-[40%] bg-[#070507] rounded-xl p-4 flex flex-col gap-y-2 justify-end">
-            <div className="flex flex-col items-end justify-end">
-              <h2 className="text-[#FFF0A2] text-lg tracking-wide text-right mb-1">
-                14 Aug, 7:30pm - 16 Aug, 10:30 pm
-              </h2>
-              <h1 className="text-[#E5CE63] font-black text-2xl tracking-widest text-right leading-none">
-                BACK TO THE SUTURE
-              </h1>
+        <div className="flex flex-row gap-8">
+          {/* Left: User Form */}
+          <div className="w-full md:w-1/2 bg-[#18151a] rounded-xl p-6 flex flex-col gap-y-4 justify-start border border-[#E5CE63]/30">
+            <h2 className="text-[#FFFBE8] font-bold text-xl mb-4">
+              Contact Details
+            </h2>
+            <label className="text-[#FFFBE8] font-semibold mb-2">
+              First Name
+              <input
+                type="text"
+                name="firstName"
+                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              {errors.firstName && (
+                <span className="text-red-400 text-sm">{errors.firstName}</span>
+              )}
+            </label>
+            <label className="text-[#FFFBE8] font-semibold mb-2">
+              Last Name
+              <input
+                type="text"
+                name="lastName"
+                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+              {errors.lastName && (
+                <span className="text-red-400 text-sm">{errors.lastName}</span>
+              )}
+            </label>
+            <label className="text-[#FFFBE8] font-semibold mb-2">
+              Email
+              <input
+                type="email"
+                name="email"
+                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {errors.email && (
+                <span className="text-red-400 text-sm">{errors.email}</span>
+              )}
+            </label>
+            <label className="text-[#FFFBE8] font-semibold mb-2">
+              Phone
+              <input
+                type="tel"
+                name="phone"
+                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              {errors.phone && (
+                <span className="text-red-400 text-sm">{errors.phone}</span>
+              )}
+            </label>
+            <label className="flex items-center gap-2 text-[#FFFBE8] font-semibold mb-2">
+              <input
+                type="checkbox"
+                name="isStudent"
+                className="accent-[#E5CE63]"
+                checked={isStudent}
+                onChange={(e) => setIsStudent(e.target.checked)}
+              />
+              Are you a student? (We'll check your student ID at the door)
+            </label>
+            <button
+              type="submit"
+              className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2] mt-4"
+            >
+              Submit
+            </button>
+          </div>
+          {/* Right: Summary */}
+          <div className="w-full md:w-1/2 flex flex-col gap-y-4 justify-start">
+            <div className="w-full bg-[#070507] rounded-xl p-4 flex flex-col gap-y-2 justify-end">
+              <div className="flex flex-col items-end justify-end">
+                <h2 className="text-[#FFF0A2] text-lg tracking-wide text-right mb-1">
+                  {showDates.find((d) => d.value === selectedDate)?.label ||
+                    showDates[0].label}
+                </h2>
+                <h1 className="text-[#E5CE63] font-black text-2xl tracking-widest text-right leading-none">
+                  BACK TO THE SUTURE
+                </h1>
+              </div>
+            </div>
+            {/* Summary Section */}
+            <div className="mb-8 p-3 bg-[#18151a] rounded-xl border border-[#E5CE63]/30 text-white">
+              <div className="font-bold text-lg mb-1">Summary</div>
+              <div>
+                <span className="font-semibold">Date: </span>
+                {showDates.find((d) => d.value === selectedDate)?.label ||
+                  showDates[0].label}
+              </div>
+              <div>
+                <span className="font-semibold">Seats: </span>
+                {selectedSeats.length > 0 ? (
+                  <ul className="mt-1">
+                    {selectedSeats.map((seat) => (
+                      <li key={`${seat.rowLabel}-${seat.number}`}>
+                        {seat.seatType === 'vip' ? 'VIP ' : ''}Row{' '}
+                        {seat.rowLabel} Seat {seat.number} -{' '}
+                        {seat.seatType === 'vip' ? vipPrice : normalPrice} NZD
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  'None selected'
+                )}
+              </div>
+              <div className="mt-2">
+                <span className="font-semibold">Total Price: </span>
+                {totalPrice > 0 ? `${totalPrice} NZD` : '0 NZD'}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 px-10">
-          {formStates.map((data, i) => (
-            <div key={data.id}>
-              <h2 className="text-[#FFFBE8] font-semibold text-2xl mb-4">
-                Ticket {i + 1}
-              </h2>
-              <TicketForm
-                data={data}
-                errors={errors[i] || {}}
-                onChange={handleInputChange}
-                index={i}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 px-10">
-          <button
-            type="submit"
-            className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2]"
-          >
-            Submit
-          </button>
-          {submitted && (
-            <p className="text-green-500 mt-4 font-semibold">
-              All forms submitted successfully!
-            </p>
-          )}
-        </div>
+        {submitted && (
+          <p className="text-green-500 mt-4 font-semibold">
+            We'll redirect you to the payment page shortly...
+          </p>
+        )}
 
         <button
           type="button"
