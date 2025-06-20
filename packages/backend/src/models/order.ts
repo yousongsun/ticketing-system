@@ -5,10 +5,20 @@ interface IOrder extends OrderType, Document {}
 
 const orderSchema: Schema<IOrder> = new Schema(
   {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     email: { type: String, required: true },
-    dateOfShow: { type: String, required: true },
-    numberOfTickets: { type: Number, required: true },
-    seats: { type: [String], required: true },
+    phone: { type: String, required: true },
+    isStudent: { type: Boolean, required: true },
+    selectedDate: { type: String, required: true },
+    selectedSeats: [
+      {
+        rowLabel: { type: String, required: true },
+        number: { type: Number, required: true },
+        seatType: { type: String, enum: ['Standard', 'VIP'], required: true },
+      },
+    ],
+    totalPrice: { type: Number, required: true },
     paid: { type: Boolean, required: true },
   },
   {

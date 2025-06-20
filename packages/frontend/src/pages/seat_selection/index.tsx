@@ -120,7 +120,7 @@ const SeatSelectionPage: React.FC = () => {
                         <div>
                           <span
                             className={`${
-                              seat.seatType === 'vip'
+                              seat.seatType === 'VIP'
                                 ? 'text-[#E5CE63]'
                                 : 'text-white'
                             } font-bold`}

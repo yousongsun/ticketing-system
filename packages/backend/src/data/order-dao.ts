@@ -1,17 +1,29 @@
 import { type IOrder, Order } from '../models/order';
 
 async function createOrder(
+  firstName: string,
+  lastName: string,
   email: string,
-  dateOfShow: string,
-  numberOfTickets: number,
-  seats: string[],
+  phone: string,
+  isStudent: boolean,
+  selectedDate: string,
+  selectedSeats: {
+    rowLabel: string;
+    number: number;
+    seatType: 'Standard' | 'VIP';
+  }[],
+  totalPrice: number,
 ) {
   try {
     const dbOrder = new Order({
+      firstName,
+      lastName,
       email,
-      dateOfShow,
-      numberOfTickets,
-      seats,
+      phone,
+      isStudent,
+      selectedDate,
+      selectedSeats,
+      totalPrice,
       paid: false,
     });
     return await dbOrder.save();
@@ -38,10 +50,14 @@ async function updateOrder(order: IOrder): Promise<boolean> {
     const updatedOrder = await Order.findOneAndUpdate(
       { _id: order._id },
       {
+        firstName: order.firstName,
+        lastName: order.lastName,
         email: order.email,
-        dateOfShow: order.dateOfShow,
-        numberOfTickets: order.numberOfTickets,
-        seats: order.seats,
+        phone: order.phone,
+        isStudent: order.isStudent,
+        selectedDate: order.selectedDate,
+        selectedSeats: order.selectedSeats,
+        totalPrice: order.totalPrice,
         paid: order.paid,
       },
       { new: true },
@@ -51,13 +67,6 @@ async function updateOrder(order: IOrder): Promise<boolean> {
     console.error('Error updating order:', error);
     return false;
   }
-}
-
-async function updateOrderPaid(email: string) {
-  const filter = { email: email };
-  const update = { paid: true };
-  const doc = await Order.findOneAndUpdate(filter, update, { new: true });
-  return doc;
 }
 
 async function deleteOrder(id: string): Promise<boolean> {
@@ -76,6 +85,5 @@ export {
   retrieveOrderByEmail,
   retrieveOrderById,
   updateOrder,
-  updateOrderPaid,
   deleteOrder,
 };

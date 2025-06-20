@@ -1,7 +1,15 @@
 export interface OrderType {
+  firstName: string;
+  lastName: string;
   email: string;
-  dateOfShow: string;
-  numberOfTickets: number;
-  seats: string[];
+  phone: string;
+  isStudent: boolean;
+  selectedDate: string;
+  selectedSeats: {
+    rowLabel: string;
+    number: number;
+    seatType: 'Standard' | 'VIP';
+  }[];
+  totalPrice: number;
   paid: boolean;
 }

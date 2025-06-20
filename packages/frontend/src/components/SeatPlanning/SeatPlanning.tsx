@@ -19,7 +19,7 @@ export interface Seat {
   rowLabel: string;
   available: boolean;
   selected?: boolean;
-  seatType: 'normal' | 'vip';
+  seatType: 'Standard' | 'VIP';
 }
 
 // Variables to adjust x offset of rows relative to center wing
@@ -104,7 +104,7 @@ export const SeatPlanning: React.FC = () => {
     <div className="flex flex-col items-center w-full">
       {/* Stage container */}
       <div className="flex flex-row gap-4 mb-16 w-full h-20 text-white rounded-t-xl items-center justify-center">
-        {showDates.map((date, idx) => (
+        {showDates.map((date) => (
           <button
             key={date.value}
             className={`px-8 py-4 text-white rounded transition ${

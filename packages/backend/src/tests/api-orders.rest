@@ -6,28 +6,29 @@ POST {{baseUrl}}/orders/
 content-type: application/json
 
 {
- "userID": "45",
- "numberOfTickets": 4,
- "email": "test@test.com",
- "dateOfShow": "2025-08-15",
- "seats" : ["21B","21C", "24B", "30X"]
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "test@test.com",
+    "phone": "+1234567890",
+    "isStudent": true,
+    "selectedDate": "2025-08-15",
+    "selectedSeats": [
+        { "rowLabel": "A", "number": 2, "seatType": "Standard" },
+        { "rowLabel": "B", "number": 3, "seatType": "Standard" },
+        { "rowLabel": "C", "number": 2, "seatType": "VIP" },
+        { "rowLabel": "D", "number": 10, "seatType": "Standard" }
+    ],
+    "totalPrice": 120.00,
+    "paid": false
 }
 
 ###
-GET {{baseUrl}}/orders/6852984f21b27619a0fa2b32
+GET {{baseUrl}}/orders/68554e246c44e317cf5cb178
 Content-Type: application/json
 
-### 
-PATCH {{baseUrl}}/orders/order-paid
-Content-Type: application/json
-
-{
-    "email": "test@test.com",
-    "orderID": "685298f021b27619a0fa2b49"
-}
 
 ### 
-PUT {{baseUrl}}/orders/685298f021b27619a0fa2b49
+PUT {{baseUrl}}/orders/68554e246c44e317cf5cb178
 Content-Type: application/json
 
 {

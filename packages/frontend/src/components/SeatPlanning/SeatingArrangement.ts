@@ -101,7 +101,7 @@ const generateMockSeatData = () => {
           rowLabel: row.label,
           available: Math.random() > 0.2,
           selected: false,
-          seatType: Math.random() > 0.1 ? 'normal' : 'vip',
+          seatType: Math.random() > 0.1 ? 'Standard' : 'VIP',
         });
       }
     }

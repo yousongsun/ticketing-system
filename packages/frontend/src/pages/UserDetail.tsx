@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import type { Seat } from '../components/SeatPlanning/SeatPlanning';
-import { TicketForm } from '../components/TicketForm';
 import type { RootState } from '../redux/store';
 
 const API_BASE_URL =
@@ -40,10 +39,10 @@ const UserDetail: React.FC = () => {
   const vipPrice = isStudent ? 70 : 80;
   const normalPrice = isStudent ? 50 : 60;
   const vipCount = selectedSeats.filter(
-    (seat) => seat.seatType === 'vip',
+    (seat) => seat.seatType === 'VIP',
   ).length;
   const normalCount = selectedSeats.filter(
-    (seat) => seat.seatType === 'normal',
+    (seat) => seat.seatType === 'Standard',
   ).length;
   const totalPrice = vipCount * vipPrice + normalCount * normalPrice;
 
@@ -71,10 +70,25 @@ const UserDetail: React.FC = () => {
         email,
         phone,
         isStudent,
+        selectedDate,
         selectedSeats,
         totalPrice,
+        paid: false,
       };
       console.log('Form submitted:', formPayload);
+
+      axios
+        .post(`${API_BASE_URL}/api/v1/orders`, formPayload)
+        .then((response) => {
+          console.log('Order created successfully:', response.data);
+          // Redirect to payment page
+          // handleStripeCheckout();
+        })
+        .catch((error) => {
+          console.error('Error creating order:', error);
+          setErrors({ general: 'Failed to create order. Please try again.' });
+          setSubmitted(false);
+        });
 
       const selectedDateLabel =
         showDates.find((d) => d.value === selectedDate)?.label ||
@@ -82,8 +96,8 @@ const UserDetail: React.FC = () => {
 
       const payload = {
         lineItems: selectedSeats.map((seat) => ({
-          name: `${seat.seatType === 'vip' ? 'VIP ' : ''}Row ${seat.rowLabel} Seat ${seat.number} (${selectedDateLabel})`,
-          price: seat.seatType === 'vip' ? vipPrice : normalPrice,
+          name: `${seat.seatType === 'VIP' ? 'VIP ' : ''}Row ${seat.rowLabel} Seat ${seat.number} (${selectedDateLabel})`,
+          price: seat.seatType === 'VIP' ? vipPrice : normalPrice,
           quantity: 1,
         })),
         successUrl: 'https://www.medrevue.co.nz/success',
@@ -126,125 +140,148 @@ const UserDetail: React.FC = () => {
       className="min-h-screen bg-[#070507] flex flex-col items-center justify-center p-8 relative overflow-hidden"
     >
       <div className="max-w-6xl w-full p-2 relative z-10">
-        <div className="flex flex-row gap-8">
+        <div className="flex justify-start mb-4">
+          <button
+            type="button"
+            className="text-white text-lg font-bold border-2 rounded-2xl px-4 py-2"
+            onClick={() => {
+              navigate('/buy');
+            }}
+          >
+            ← Previous Step
+          </button>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-8 w-full">
           {/* Left: User Form */}
-          <div className="w-full md:w-1/2 bg-[#18151a] rounded-xl p-6 flex flex-col gap-y-4 justify-start border border-[#E5CE63]/30">
-            <h2 className="text-[#FFFBE8] font-bold text-xl mb-4">
-              Contact Details
+          <div className="w-full md:w-1/2 bg-[#18151a] rounded-2xl p-8 flex flex-col gap-y-5 border border-[#E5CE63]/30 shadow-lg">
+            <h2 className="text-[#FFFBE8] font-bold text-2xl mb-2 tracking-wide">
+              Enter your contact details
             </h2>
-            <label className="text-[#FFFBE8] font-semibold mb-2">
-              First Name
-              <input
-                type="text"
-                name="firstName"
-                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
-                required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-              {errors.firstName && (
-                <span className="text-red-400 text-sm">{errors.firstName}</span>
-              )}
-            </label>
-            <label className="text-[#FFFBE8] font-semibold mb-2">
-              Last Name
-              <input
-                type="text"
-                name="lastName"
-                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
-                required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-              {errors.lastName && (
-                <span className="text-red-400 text-sm">{errors.lastName}</span>
-              )}
-            </label>
-            <label className="text-[#FFFBE8] font-semibold mb-2">
-              Email
-              <input
-                type="email"
-                name="email"
-                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {errors.email && (
-                <span className="text-red-400 text-sm">{errors.email}</span>
-              )}
-            </label>
-            <label className="text-[#FFFBE8] font-semibold mb-2">
-              Phone
-              <input
-                type="tel"
-                name="phone"
-                className="w-full mt-1 p-2 rounded bg-[#23202a] text-white border border-[#E5CE63]/20"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              {errors.phone && (
-                <span className="text-red-400 text-sm">{errors.phone}</span>
-              )}
-            </label>
-            <label className="flex items-center gap-2 text-[#FFFBE8] font-semibold mb-2">
-              <input
-                type="checkbox"
-                name="isStudent"
-                className="accent-[#E5CE63]"
-                checked={isStudent}
-                onChange={(e) => setIsStudent(e.target.checked)}
-              />
-              Are you a student? (We'll check your student ID at the door)
-            </label>
+            <div className="flex flex-col gap-4">
+              <label className="text-[#FFFBE8] font-semibold">
+                First Name
+                <input
+                  type="text"
+                  name="firstName"
+                  className="w-full mt-1 p-3 rounded-lg bg-[#23202a] text-white border border-[#E5CE63]/20 focus:outline-none focus:ring-2 focus:ring-[#E5CE63]/60 transition"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                {errors.firstName && (
+                  <span className="text-red-400 text-sm">
+                    {errors.firstName}
+                  </span>
+                )}
+              </label>
+              <label className="text-[#FFFBE8] font-semibold">
+                Last Name
+                <input
+                  type="text"
+                  name="lastName"
+                  className="w-full mt-1 p-3 rounded-lg bg-[#23202a] text-white border border-[#E5CE63]/20 focus:outline-none focus:ring-2 focus:ring-[#E5CE63]/60 transition"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                {errors.lastName && (
+                  <span className="text-red-400 text-sm">
+                    {errors.lastName}
+                  </span>
+                )}
+              </label>
+              <label className="text-[#FFFBE8] font-semibold">
+                Email
+                <input
+                  type="email"
+                  name="email"
+                  className="w-full mt-1 p-3 rounded-lg bg-[#23202a] text-white border border-[#E5CE63]/20 focus:outline-none focus:ring-2 focus:ring-[#E5CE63]/60 transition"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <span className="text-red-400 text-sm">{errors.email}</span>
+                )}
+              </label>
+              <label className="text-[#FFFBE8] font-semibold">
+                Phone
+                <input
+                  type="tel"
+                  name="phone"
+                  className="w-full mt-1 p-3 rounded-lg bg-[#23202a] text-white border border-[#E5CE63]/20 focus:outline-none focus:ring-2 focus:ring-[#E5CE63]/60 transition"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                {errors.phone && (
+                  <span className="text-red-400 text-sm">{errors.phone}</span>
+                )}
+              </label>
+              <label className="flex items-center gap-3 text-[#FFFBE8] font-semibold">
+                <input
+                  type="checkbox"
+                  name="isStudent"
+                  className="accent-[#E5CE63] w-5 h-5"
+                  checked={isStudent}
+                  onChange={(e) => setIsStudent(e.target.checked)}
+                />
+                Are you a student?{' '}
+                <span className="text-xs font-normal text-[#E5CE63]/80">
+                  (We'll check your student ID at the door)
+                </span>
+              </label>
+            </div>
             <button
               type="submit"
-              className="w-full py-3 rounded font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2] mt-4"
+              className="w-full py-3 rounded-lg font-bold transition bg-[#E5CE63] text-black hover:bg-[#FFF0A2] mt-4 shadow-md text-lg"
             >
               Submit
             </button>
           </div>
           {/* Right: Summary */}
-          <div className="w-full md:w-1/2 flex flex-col gap-y-4 justify-start">
-            <div className="w-full bg-[#070507] rounded-xl p-4 flex flex-col gap-y-2 justify-end">
+          <div className="w-full md:w-1/2 flex flex-col gap-y-6 justify-start">
+            <div className="w-full bg-gradient-to-br from-[#18151a] to-[#070507] rounded-2xl p-6 flex flex-col gap-y-2 shadow-lg">
               <div className="flex flex-col items-end justify-end">
                 <h2 className="text-[#FFF0A2] text-lg tracking-wide text-right mb-1">
                   {showDates.find((d) => d.value === selectedDate)?.label ||
                     showDates[0].label}
                 </h2>
-                <h1 className="text-[#E5CE63] font-black text-2xl tracking-widest text-right leading-none">
+                <h1 className="text-[#E5CE63] font-black text-2xl md:text-3xl tracking-widest text-right leading-none">
                   BACK TO THE SUTURE
                 </h1>
               </div>
             </div>
             {/* Summary Section */}
-            <div className="mb-8 p-3 bg-[#18151a] rounded-xl border border-[#E5CE63]/30 text-white">
-              <div className="font-bold text-lg mb-1">Summary</div>
-              <div>
-                <span className="font-semibold">Date: </span>
-                {showDates.find((d) => d.value === selectedDate)?.label ||
-                  showDates[0].label}
-              </div>
-              <div>
-                <span className="font-semibold">Seats: </span>
+            <div className="p-5 bg-[#18151a] rounded-2xl border border-[#E5CE63]/30 text-white shadow-md">
+              <div className="mb-1">
+                <span className="font-semibold">Seats summary: </span>
                 {selectedSeats.length > 0 ? (
-                  <ul className="mt-1">
+                  <ul className="mt-1 space-y-1">
                     {selectedSeats.map((seat) => (
                       <li key={`${seat.rowLabel}-${seat.number}`}>
-                        {seat.seatType === 'vip' ? 'VIP ' : ''}Row{' '}
-                        {seat.rowLabel} Seat {seat.number} -{' '}
-                        {seat.seatType === 'vip' ? vipPrice : normalPrice} NZD
+                        <span className="inline-block px-2 py-1 rounded bg-[#E5CE63]/10 text-[#E5CE63] font-semibold mr-2">
+                          {seat.seatType === 'VIP' ? 'VIP' : 'Standard'}
+                        </span>
+                        Row {seat.rowLabel} Seat {seat.number} -{' '}
+                        <span className="font-semibold">
+                          {seat.seatType === 'VIP' ? vipPrice : normalPrice} NZD
+                        </span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  'None selected'
+                  <span className="italic text-[#E5CE63]/70">
+                    None selected
+                  </span>
                 )}
               </div>
-              <div className="mt-2">
+              <div className="mt-3 text-lg">
                 <span className="font-semibold">Total Price: </span>
-                {totalPrice > 0 ? `${totalPrice} NZD` : '0 NZD'}
+                <span className="text-[#E5CE63] font-bold">
+                  {totalPrice > 0 ? `${totalPrice} NZD` : '0 NZD'}
+                </span>
               </div>
             </div>
           </div>
@@ -255,16 +292,6 @@ const UserDetail: React.FC = () => {
             We'll redirect you to the payment page shortly...
           </p>
         )}
-
-        <button
-          type="button"
-          className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2 sticky bottom-4"
-          onClick={() => {
-            navigate('/buy');
-          }}
-        >
-          ← Previous Step
-        </button>
       </div>
     </form>
   );
