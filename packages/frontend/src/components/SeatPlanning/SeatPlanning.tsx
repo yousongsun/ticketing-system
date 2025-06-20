@@ -50,9 +50,15 @@ export const SeatPlanning: React.FC = () => {
   }
 
   // Initialize the Redux seat data with mock data
+  const { initialized } = useSelector(
+    (state: RootState) => state.seatSelection,
+  );
+
   useEffect(() => {
-    dispatch(initializeSeatData(mockSeatData));
-  }, [dispatch]);
+    if (!initialized) {
+      dispatch(initializeSeatData(mockSeatData));
+    }
+  }, [dispatch, initialized]);
 
   // Handle seat selection
   const onSeatSelect = (seat: Seat) => {

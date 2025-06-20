@@ -2,6 +2,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { TicketForm } from '../components/TicketForm';
 
 type FormData = {
@@ -29,6 +30,7 @@ const initialFormStateWithId = (id: string): FormDataWithId => ({
 });
 
 const UserDetail: React.FC = () => {
+  const navigate = useNavigate();
   const [numberOfSeats] = useState(2); // number of seats
   const [formStates, setFormStates] = useState<FormDataWithId[]>(
     Array.from({ length: numberOfSeats }, (_, i) =>
@@ -175,6 +177,16 @@ const UserDetail: React.FC = () => {
             </p>
           )}
         </div>
+
+        <button
+          type="button"
+          className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2 sticky bottom-4"
+          onClick={() => {
+            navigate('/buy');
+          }}
+        >
+          ← Previous Step
+        </button>
       </div>
     </form>
   );

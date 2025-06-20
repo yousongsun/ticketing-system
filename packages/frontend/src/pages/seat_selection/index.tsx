@@ -2,23 +2,28 @@ import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SeatPlanning } from '../../components/SeatPlanning';
-import type { AppDispatch } from '../../redux/store';
+import type { AppDispatch, RootState } from '../../redux/store';
 import './SeatSelectionStyles.css';
 import { useNavigate } from 'react-router';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import BackgroundBlur from '../../assets/BackgroundBlur.svg';
 import type { Seat } from '../../components/SeatPlanning/SeatPlanning';
-import {
-  selectSelectedSeats,
-  toggleSeatSelection,
-} from '../../redux/slices/seatSelectionSlice';
+import { toggleSeatSelection } from '../../redux/slices/seatSelectionSlice';
 
 const SeatSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [recentlyAddedIds, setRecentlyAddedIds] = useState<string[]>([]);
   const prevSeatIdsRef = useRef<string[]>([]);
 
-  // Get selected seats using the selector
-  const selectedSeats = useSelector(selectSelectedSeats);
+  // Get seat data from Redux
+  const seatData = useSelector(
+    (state: RootState) => state.seatSelection.seatData,
+  );
+
+  // Flatten the seat data to get all selected seats
+  const selectedSeats = Object.values(seatData).flatMap((row: Seat[]) =>
+    row.filter((seat) => seat.selected),
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -53,7 +58,7 @@ const SeatSelectionPage: React.FC = () => {
     <div className="relative select-none overflow-hidden overscroll-none touch-none cursor-default h-screen">
       {/* Background Blur */}
       <img
-        src={'./BackgroundBlur.svg'}
+        src={BackgroundBlur}
         alt="decorative blur"
         className="w-full h-screen absolute top-0 left-0 pointer-events-none z-10"
         draggable="false"
