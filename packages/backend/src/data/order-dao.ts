@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import { type IOrder, Order } from '../models/order';
 
+dotenv.config();
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 if (!stripeKey) throw new Error('Missing STRIPE_SECRET_KEY in environment');
 
