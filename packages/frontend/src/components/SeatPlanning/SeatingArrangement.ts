@@ -107,8 +107,6 @@ const generateMockSeatData = () => {
     }
   }
 
-  console.log(JSON.stringify(seatData));
-
   return seatData;
 };
 

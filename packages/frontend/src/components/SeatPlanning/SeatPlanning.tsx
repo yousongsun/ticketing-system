@@ -1,4 +1,5 @@
 import type { SeatType } from '@medrevue/types';
+import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -12,8 +13,10 @@ import {
   type RowArrangement,
   SEATING_ARRANGEMENT,
   type SeatData,
-  mockSeatData,
 } from './SeatingArrangement';
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 // Variables to adjust x offset of rows relative to center wing
 const SQUISH_MAGNITUDE = 7;
@@ -50,16 +53,31 @@ export const SeatPlanning: React.FC = () => {
     rowXOffsets[rowLabel] = offset;
   }
 
-  // Initialize the Redux seat data with mock data
-  const { initialized } = useSelector(
-    (state: RootState) => state.seatSelection,
-  );
-
   useEffect(() => {
-    if (!initialized) {
-      dispatch(initializeSeatData(mockSeatData));
+    const fetchSeatData = async () => {
+      try {
+        const response = await axios.get<SeatData>(
+          `${API_BASE_URL}/api/v1/seats/all`,
+          {
+            params: { date: selectedDate },
+          },
+        );
+        dispatch(initializeSeatData(response.data));
+      } catch (error) {
+        console.error('Failed to fetch seat data:', error);
+      }
+    };
+
+    if (selectedDate) {
+      fetchSeatData();
     }
-  }, [dispatch, initialized]);
+  }, [dispatch, selectedDate]);
+
+  // useEffect(() => {
+  //   if (!initialized) {
+  //     dispatch(initializeSeatData(mockSeatData));
+  //   }
+  // }, [dispatch, initialized]);
 
   // Handle seat selection
   const onSeatSelect = (seat: SeatType) => {
