@@ -1,10 +1,10 @@
+import type { SeatType } from '@medrevue/types';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import type { Seat } from '../components/SeatPlanning/SeatPlanning';
 import type { RootState } from '../redux/store';
 
 const API_BASE_URL =
@@ -31,7 +31,7 @@ const UserDetail: React.FC = () => {
     (state: RootState) => state.seatSelection.seatData,
   );
   // Flatten the seat data to get all selected seats
-  const selectedSeats = Object.values(seatData).flatMap((row: Seat[]) =>
+  const selectedSeats = Object.values(seatData).flatMap((row: SeatType[]) =>
     row.filter((seat) => seat.selected),
   );
 

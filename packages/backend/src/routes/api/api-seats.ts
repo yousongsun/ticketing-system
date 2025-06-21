@@ -1,46 +1,42 @@
 import express, { type Request, type Response } from 'express';
-import mongoose from 'mongoose';
-import Seat from '../../models/Seat';
+import { retrieveSeatList } from '../../data/seat-dao';
 
 const router = express.Router();
 
-// POST /api/v1/seats/select
-router.post('/select', async (req: Request, res: Response): Promise<void> => {
-  const { userId, seatNumber } = req.body;
+// router.get('/all', async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const seats = await retrieveSeatList();
+//     res.status(200).json({
+//       seats,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: 'Unable to retrieve seats from database',
+//     });
+//   }
+// });
 
-  // Validate user inputs
-  if (!userId || !seatNumber) {
-    res.status(400).json({ message: 'User ID and seat number are required.' });
-    return;
-  }
-
+router.get('/all', async (req: Request, res: Response): Promise<void> => {
   try {
-    const seat = await Seat.findOne({ seatNumber });
+    const seats = await retrieveSeatList();
 
-    if (!seat) {
-      res.status(404).json({ message: 'Seat not found.' });
-      return;
+    // Transform to { [rowLabel]: Seat[] }
+    const seatData: Record<string, (typeof seats)[0][]> = {};
+
+    for (const seat of seats) {
+      const label = seat.rowLabel;
+      if (!seatData[label]) {
+        seatData[label] = [];
+      }
+      seatData[label].push(seat);
     }
 
-    if (seat.reserved) {
-      res.status(409).json({ message: 'Seat already reserved.' });
-      return;
-    }
-
-    // Reserve the seat if available
-    seat.reserved = true;
-    seat.reservedBy = userId;
-
-    // Save the updated seat and send the response
-    await seat.save();
-    res.status(200).json({
-      message: `Seat ${seatNumber} reserved successfully by User ${userId}.`,
-      seatNumber: seat.seatNumber,
-      reservedBy: seat.reservedBy,
-    });
+    res.status(200).json(seatData);
   } catch (error) {
-    console.error('Error reserving seat:', error);
-    res.status(500).json({ message: 'Server error.' });
+    console.error(error);
+    res.status(500).json({
+      error: 'Unable to retrieve seats from database',
+    });
   }
 });
 

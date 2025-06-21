@@ -88,7 +88,7 @@ export const SEATING_ARRANGEMENT: SeatingArrangement = {
   ],
 };
 
-const generateMockSeatData = () => {
+export const seedSeatData = (): SeatData => {
   const seatData: SeatData = {};
   for (const wing of Object.values(SEATING_ARRANGEMENT)) {
     for (const row of wing) {
@@ -106,10 +106,5 @@ const generateMockSeatData = () => {
       }
     }
   }
-
-  console.log(JSON.stringify(seatData));
-
   return seatData;
 };
-
-export const mockSeatData: SeatData = generateMockSeatData();

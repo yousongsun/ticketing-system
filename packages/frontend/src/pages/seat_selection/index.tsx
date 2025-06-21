@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SeatPlanning } from '../../components/SeatPlanning';
 import type { AppDispatch, RootState } from '../../redux/store';
 import './SeatSelectionStyles.css';
+import type { SeatType } from '@medrevue/types';
 import { useNavigate } from 'react-router';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import BackgroundBlur from '../../assets/BackgroundBlur.svg';
-import type { Seat } from '../../components/SeatPlanning/SeatPlanning';
 import { toggleSeatSelection } from '../../redux/slices/seatSelectionSlice';
 
 const SeatSelectionPage: React.FC = () => {
@@ -21,7 +21,7 @@ const SeatSelectionPage: React.FC = () => {
   );
 
   // Flatten the seat data to get all selected seats
-  const selectedSeats = Object.values(seatData).flatMap((row: Seat[]) =>
+  const selectedSeats = Object.values(seatData).flatMap((row: SeatType[]) =>
     row.filter((seat) => seat.selected),
   );
 
@@ -36,7 +36,7 @@ const SeatSelectionPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Handle deselecting a seat
-  const handleDeselectSeat = (seat: Seat) => {
+  const handleDeselectSeat = (seat: SeatType) => {
     dispatch(toggleSeatSelection(seat));
   };
 

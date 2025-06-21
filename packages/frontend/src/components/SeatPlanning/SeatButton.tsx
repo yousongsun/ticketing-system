@@ -1,8 +1,8 @@
+import type { SeatType } from '@medrevue/types';
 import type React from 'react';
-import type { Seat } from './SeatPlanning';
 
 interface SeatButtonProps {
-  seat: Seat;
+  seat: SeatType;
   yOffset?: number;
   isGap?: boolean;
   onSeatSelect: () => void;

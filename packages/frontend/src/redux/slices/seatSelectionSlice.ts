@@ -1,8 +1,6 @@
+import type { SeatType } from '@medrevue/types';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import type {
-  Seat,
-  SeatData,
-} from '../../components/SeatPlanning/SeatPlanning';
+import type { SeatData } from '../../components/SeatPlanning/SeatPlanning';
 
 interface SeatSelectionState {
   seatData: SeatData;
@@ -32,7 +30,7 @@ const seatSelectionSlice = createSlice({
       state.seatData = action.payload;
       state.initialized = true;
     },
-    toggleSeatSelection: (state, action: PayloadAction<Seat>) => {
+    toggleSeatSelection: (state, action: PayloadAction<SeatType>) => {
       const { rowLabel, number } = action.payload;
       state.seatData[rowLabel] = state.seatData[rowLabel].map((seat) =>
         seat.number === number ? { ...seat, selected: !seat.selected } : seat,

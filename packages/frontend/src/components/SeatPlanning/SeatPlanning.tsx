@@ -1,3 +1,4 @@
+import type { SeatType } from '@medrevue/types';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,14 +14,6 @@ import {
   type SeatData,
   mockSeatData,
 } from './SeatingArrangement';
-
-export interface Seat {
-  number: number;
-  rowLabel: string;
-  available: boolean;
-  selected?: boolean;
-  seatType: 'Standard' | 'VIP';
-}
 
 // Variables to adjust x offset of rows relative to center wing
 const SQUISH_MAGNITUDE = 7;
@@ -69,7 +62,7 @@ export const SeatPlanning: React.FC = () => {
   }, [dispatch, initialized]);
 
   // Handle seat selection
-  const onSeatSelect = (seat: Seat) => {
+  const onSeatSelect = (seat: SeatType) => {
     dispatch(toggleSeatSelection(seat));
   };
 
