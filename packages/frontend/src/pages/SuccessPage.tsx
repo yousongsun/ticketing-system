@@ -64,15 +64,6 @@ const SuccessPage: React.FC = () => {
                 Contact Us
               </a>
             </p>
-
-            <Button
-              onClick={() => {
-                navigate('/');
-              }}
-              className="px-6 py-2 bg-[#E5CE63] text-[#070507] font-bold rounded-md hover:bg-[#FFF0A2] cursor-pointer"
-            >
-              Home
-            </Button>
           </div>
         </div>
 
