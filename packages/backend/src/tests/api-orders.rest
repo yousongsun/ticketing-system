@@ -18,17 +18,16 @@ content-type: application/json
         { "rowLabel": "C", "number": 2, "seatType": "VIP" },
         { "rowLabel": "D", "number": 10, "seatType": "Standard" }
     ],
-    "totalPrice": 120.00,
-    "paid": false
+    "totalPrice": 120.00
 }
 
 ###
-GET {{baseUrl}}/orders/68554e246c44e317cf5cb178
+GET {{baseUrl}}/orders/{:sessionId}
 Content-Type: application/json
 
 
 ### 
-PUT {{baseUrl}}/orders/68554e246c44e317cf5cb178
+PUT {{baseUrl}}/orders/{:sessionId}
 Content-Type: application/json
 
 {

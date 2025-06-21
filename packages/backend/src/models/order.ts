@@ -19,6 +19,7 @@ const orderSchema: Schema<IOrder> = new Schema(
       },
     ],
     totalPrice: { type: Number, required: true },
+    checkoutSessionId: { type: String, required: true },
     paid: { type: Boolean, required: true },
   },
   {

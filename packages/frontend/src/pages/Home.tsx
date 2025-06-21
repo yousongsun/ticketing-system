@@ -284,7 +284,7 @@ const HomePage: React.FC = () => {
               blurb here, lorem ipsum etc. etcetera etcetera
             </p>
             <p className="max-w-xs mx-auto space-y-4 lg:max-w-[425px] lg:mx-0">
-              Profits go towards xyz charity.
+              Profits go towards Médecins Sans Frontières (MSF).
             </p>
           </div>
         </div>

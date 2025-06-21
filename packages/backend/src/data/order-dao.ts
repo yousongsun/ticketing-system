@@ -1,4 +1,12 @@
+import Stripe from 'stripe';
 import { type IOrder, Order } from '../models/order';
+
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) throw new Error('Missing STRIPE_SECRET_KEY in environment');
+
+const stripe = new Stripe(stripeKey, {
+  apiVersion: '2025-05-28.basil',
+});
 
 async function createOrder(
   firstName: string,
@@ -15,6 +23,36 @@ async function createOrder(
   totalPrice: number,
 ) {
   try {
+    const vipPrice = isStudent ? 70 : 80;
+    const normalPrice = isStudent ? 50 : 60;
+    const lineItems = selectedSeats.map((seat) => ({
+      name: `MedRevue Ticket (${seat.seatType}) - Row ${seat.rowLabel} Seat ${seat.number}`,
+      price: seat.seatType === 'VIP' ? vipPrice : normalPrice,
+      quantity: 1,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: lineItems.map(
+        (item: { name: string; price: number; quantity: number }) => ({
+          price_data: {
+            currency: 'nzd',
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: Math.round(item.price * 100),
+          },
+          quantity: item.quantity,
+        }),
+      ),
+      mode: 'payment',
+      success_url: 'https://www.medrevue.co.nz/success',
+      cancel_url: 'https://www.medrevue.co.nz/cancel',
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+    });
+
+    const checkoutSessionId = session.id;
+
     const dbOrder = new Order({
       firstName,
       lastName,
@@ -24,6 +62,7 @@ async function createOrder(
       selectedDate,
       selectedSeats,
       totalPrice,
+      checkoutSessionId,
       paid: false,
     });
     return await dbOrder.save();
@@ -58,6 +97,7 @@ async function updateOrder(order: IOrder): Promise<boolean> {
         selectedDate: order.selectedDate,
         selectedSeats: order.selectedSeats,
         totalPrice: order.totalPrice,
+        // checkoutSessionId: order.checkoutSessionId,
         paid: order.paid,
       },
       { new: true },

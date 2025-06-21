@@ -73,47 +73,17 @@ const UserDetail: React.FC = () => {
         selectedDate,
         selectedSeats,
         totalPrice,
-        paid: false,
       };
       console.log('Form submitted:', formPayload);
 
       axios
         .post(`${API_BASE_URL}/api/v1/orders`, formPayload)
-        .then((response) => {
-          console.log('Order created successfully:', response.data);
-          // Redirect to payment page
-          // handleStripeCheckout();
-        })
-        .catch((error) => {
-          console.error('Error creating order:', error);
-          setErrors({ general: 'Failed to create order. Please try again.' });
-          setSubmitted(false);
-        });
-
-      const selectedDateLabel =
-        showDates.find((d) => d.value === selectedDate)?.label ||
-        showDates[0].label;
-
-      const payload = {
-        lineItems: selectedSeats.map((seat) => ({
-          name: `${seat.seatType === 'VIP' ? 'VIP ' : ''}Row ${seat.rowLabel} Seat ${seat.number} (${selectedDateLabel})`,
-          price: seat.seatType === 'VIP' ? vipPrice : normalPrice,
-          quantity: 1,
-        })),
-        successUrl: 'https://www.medrevue.co.nz/success',
-        cancelUrl: 'https://www.medrevue.co.nz/cancel',
-        expires_at: Math.floor(Date.now() / 1000) + 600,
-      };
-
-      axios
-        .post(`${API_BASE_URL}/api/v1/stripe/checkout-session`, payload)
         .then(async (response) => {
+          console.log('Order created successfully:', response.data);
           const { sessionId } = response.data;
-
           const stripe = await loadStripe(
             import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
           );
-
           if (stripe) {
             const { error } = await stripe.redirectToCheckout({ sessionId });
             if (error) {
@@ -126,7 +96,8 @@ const UserDetail: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.error('Error submitting form:', error);
+          console.error('Error creating order:', error);
+          setErrors({ general: 'Failed to create order. Please try again.' });
           setSubmitted(false);
         });
     } else {

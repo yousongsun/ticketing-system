@@ -41,7 +41,6 @@ router.post(
         selectedDate,
         selectedSeats,
         totalPrice,
-        paid,
       } = req.body;
 
       // Validate required fields
@@ -77,10 +76,6 @@ router.post(
         res.status(400).json({ error: 'Missing total price' });
         return;
       }
-      if (typeof paid !== 'boolean') {
-        res.status(400).json({ error: 'Missing paid status' });
-        return;
-      }
 
       // Validate selectedSeats format
       for (const seat of selectedSeats) {
@@ -111,9 +106,7 @@ router.post(
       }
 
       res.status(201).json({
-        data: {
-          orderID: order._id,
-        },
+        sessionId: order.checkoutSessionId,
       });
     } catch (error) {
       res.sendStatus(422);

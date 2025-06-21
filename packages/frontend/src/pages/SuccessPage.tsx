@@ -47,7 +47,7 @@ const SuccessPage: React.FC = () => {
               presented by MedRevue! We're thrilled to have you join us for an
               unforgettable night of laughs, music, and medical mayhem.
             </p>
-            <p> All profits go towards XYZ charity. </p>
+            <p> All profits go towards Médecins Sans Frontières (MSF). </p>
           </div>
 
           <br />

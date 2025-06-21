@@ -11,5 +11,6 @@ export interface OrderType {
     seatType: 'Standard' | 'VIP';
   }[];
   totalPrice: number;
+  checkoutSessionId: string;
   paid: boolean;
 }
