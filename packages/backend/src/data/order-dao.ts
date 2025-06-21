@@ -53,6 +53,10 @@ async function createOrder(
 
     const checkoutSessionId = session.id;
 
+    if (!checkoutSessionId) {
+      throw new Error('Failed to create Stripe checkout session');
+    }
+
     const dbOrder = new Order({
       firstName,
       lastName,

@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from 'express';
+import Stripe from 'stripe';
 import {
   createOrder,
   deleteOrder,
@@ -7,6 +8,14 @@ import {
   retrieveOrderList,
   updateOrder,
 } from '../../data/order-dao';
+import { verifyInternalRequest } from '../../middleware/verify-internal-request';
+
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) throw new Error('Missing STRIPE_SECRET_KEY in environment');
+
+const stripe = new Stripe(stripeKey, {
+  apiVersion: '2025-05-28.basil',
+});
 
 const router = express.Router();
 
@@ -115,18 +124,22 @@ router.post(
 );
 
 // Retrive all orders
-router.get('/', async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const orders = await retrieveOrderList();
-    res.status(200).json({
-      orders,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: 'Unable to retrieve orders from database',
-    });
-  }
-});
+router.get(
+  '/',
+  verifyInternalRequest,
+  async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const orders = await retrieveOrderList();
+      res.status(200).json({
+        orders,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: 'Unable to retrieve orders from database',
+      });
+    }
+  },
+);
 
 // Retrive order by ID
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
@@ -154,32 +167,105 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 });
 
 // Update order
-router.put('/:id', async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  const order = req.body;
+router.put(
+  '/:id',
+  verifyInternalRequest,
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const order = req.body;
 
-  if (!id) {
-    res.status(400).json({
-      error: 'Missing the order ID',
-    });
-    return;
-  }
-  if (!/^[a-fA-F0-9]{24}$/.test(id)) {
-    res.status(404).json({ message: 'Order not found' });
-    return;
-  }
+    if (!id) {
+      res.status(400).json({
+        error: 'Missing the order ID',
+      });
+      return;
+    }
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+      res.status(404).json({ message: 'Order not found' });
+      return;
+    }
 
-  order._id = id;
-  console.log(order);
-  const success = await updateOrder(order);
-  res.sendStatus(success ? 204 : 404);
-});
+    order._id = id;
+    console.log(order);
+    const success = await updateOrder(order);
+    res.sendStatus(success ? 204 : 404);
+  },
+);
+
+router.get(
+  '/order-status/:id',
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({
+        error: 'Missing the order ID',
+      });
+      return;
+    }
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+      res.status(404).json({ message: 'Order not found' });
+      return;
+    }
+    const order = await retrieveOrderById(id);
+
+    try {
+      const sessionId = order?.checkoutSessionId;
+      if (!sessionId) {
+        res.status(400).json({ message: 'Session ID is required' });
+        return;
+      }
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (!session) {
+        res.status(404).json({ message: 'Session not found' });
+        return;
+      }
+      const paymentIntent = session.payment_intent;
+      if (!paymentIntent) {
+        res
+          .status(404)
+          .json({ message: 'Payment intent not found for this session' });
+        return;
+      }
+      const paymentIntentId =
+        typeof paymentIntent === 'string' ? paymentIntent : paymentIntent.id;
+      const paymentIntentDetails =
+        await stripe.paymentIntents.retrieve(paymentIntentId);
+      if (!paymentIntentDetails) {
+        res.status(404).json({ message: 'Payment intent details not found' });
+        return;
+      }
+      if (paymentIntentDetails.status === 'succeeded') {
+        // Update order status to paid
+        order.paid = true;
+        await updateOrder(order);
+      }
+      res.status(200).json({ paymentStatus: paymentIntentDetails.status });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(
+          'Stripe Checkout Session payment status retrieval error:',
+          error.message,
+        );
+      } else {
+        console.error(
+          'Stripe Checkout Session payment status retrieval error:',
+          error,
+        );
+      }
+      res.status(500).json({ message: 'Failed to retrieve payment status' });
+    }
+  },
+);
 
 // Delete order
-router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  await deleteOrder(id);
-  res.sendStatus(204);
-});
+router.delete(
+  '/:id',
+  verifyInternalRequest,
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    await deleteOrder(id);
+    res.sendStatus(204);
+  },
+);
 
 export default router;

@@ -22,14 +22,18 @@ content-type: application/json
 }
 
 ###
-GET {{baseUrl}}/orders/{:sessionId}
+GET {{baseUrl}}/orders/{:orderId}
 Content-Type: application/json
 
 
 ### 
-PUT {{baseUrl}}/orders/{:sessionId}
+PUT {{baseUrl}}/orders/{:orderId}
 Content-Type: application/json
 
 {
     "paid": true
 }
+
+### 
+GET {{baseUrl}}/orders/order-status/{:orderId}
+Content-Type: application/json
