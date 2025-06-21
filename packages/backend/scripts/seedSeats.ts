@@ -5,6 +5,8 @@ import { seedSeatData } from '../src/utils/seedSeatData';
 
 dotenv.config();
 
+const dates = ['2025-08-14', '2025-08-15', '2025-08-16'];
+
 const seedSeats = async () => {
   try {
     await mongoose.connect(
@@ -12,15 +14,22 @@ const seedSeats = async () => {
     );
     console.log('✅ Connected to MongoDB');
 
-    const seatData = seedSeatData();
-    const allSeats = Object.values(seatData).flat();
-
     await Seat.deleteMany({});
     console.log('🗑️  Cleared existing seats');
 
-    await Seat.insertMany(allSeats);
-    console.log(`✅ Inserted ${allSeats.length} seats`);
+    for (const date of dates) {
+      const seatData = seedSeatData();
+      // const allSeats = Object.values(seatData).flat();
+      const allSeats = Object.values(seatData)
+        .flat()
+        .map((seat) => ({
+          ...seat,
+          date,
+        }));
 
+      await Seat.insertMany(allSeats);
+      console.log(`✅ Inserted ${allSeats.length} seats`);
+    }
     process.exit(0);
   } catch (error) {
     console.error('❌ Error seeding seats:', error);

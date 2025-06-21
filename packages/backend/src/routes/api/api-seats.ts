@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from 'express';
-import { retrieveSeatList } from '../../data/seat-dao';
+import { retrieveSeatListByDate } from '../../data/seat-dao';
 
 const router = express.Router();
 
@@ -18,7 +18,10 @@ const router = express.Router();
 
 router.get('/all', async (req: Request, res: Response): Promise<void> => {
   try {
-    const seats = await retrieveSeatList();
+    const { date } = req.query;
+    console.log('Received date:', date);
+
+    const seats = await retrieveSeatListByDate(date?.toString() || '');
 
     // Transform to { [rowLabel]: Seat[] }
     const seatData: Record<string, (typeof seats)[0][]> = {};

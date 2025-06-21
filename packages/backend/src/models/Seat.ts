@@ -1,7 +1,9 @@
 import type { SeatType } from '@medrevue/types';
 import mongoose, { Schema, type Document, type Model } from 'mongoose';
 
-interface ISeat extends SeatType, Document {}
+interface ISeat extends SeatType, Document {
+  date: string;
+}
 
 // interface Seat extends Document {
 //   seatNumber: string;
@@ -20,6 +22,7 @@ const seatSchema: Schema<ISeat> = new Schema(
       enum: ['Standard', 'VIP'],
       required: true,
     },
+    date: { type: String, required: true },
   },
   {
     timestamps: true,
