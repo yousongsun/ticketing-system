@@ -74,7 +74,7 @@ const SeatSelectionPage: React.FC = () => {
       {/* Main container */}
       <div className="relative flex flex-col md:flex-row items-center justify-between h-full bg-[#070507] z-1 gap-x-8 p-4">
         {/* Seat Selection Container */}
-        <div className="w-[60%] h-full flex items-center justify-center overflow-hidden border-2 border-[#E5CE63]/10 rounded-xl">
+        <div className="w-full md:w-[60%] h-1/2 md:h-full flex items-center justify-center overflow-hidden border-2 border-[#E5CE63]/10 rounded-xl mb-4 md:mb-0">
           <TransformWrapper
             wheel={{ step: 50 }}
             pinch={{ step: 5 }}
@@ -91,7 +91,7 @@ const SeatSelectionPage: React.FC = () => {
           </TransformWrapper>
         </div>
         {/* Selected Seat View */}
-        <div className="w-[40%] h-[90%] flex  bg-[#070507] rounded-xl p-4 flex-col gap-y-4">
+        <div className="w-full md:w-[40%] md:h-[90%] h-1/2 flex bg-[#070507] rounded-xl p-4 flex-col gap-y-4">
           {/* Page Headings */}
           <div>
             <h2 className="text-[#FFF0A2] font-bold text-md text-right tracking-wide">

@@ -128,7 +128,7 @@ const UserDetail: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 w-full">
+        <div className="flex flex-col-reverse md:flex-row gap-8 w-full">
           {/* Left: User Form */}
           <div className="w-full md:w-1/2 bg-[#18151a] rounded-2xl p-8 flex flex-col gap-y-5 border border-[#E5CE63]/30 shadow-lg">
             <h2 className="text-[#FFFBE8] font-bold text-2xl mb-2 tracking-wide">
