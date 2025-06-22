@@ -4,7 +4,6 @@ import medrevuePoster from '../assets/medrevue-poster.png';
 
 import { useEffect, useRef, useState } from 'react';
 import checkCircle from '../assets/check-circle.svg';
-import { Button } from '../components/Button';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
