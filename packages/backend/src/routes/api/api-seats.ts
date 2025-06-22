@@ -98,7 +98,7 @@ router.post('/select', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    await redisClient.set(lockKey, 'locked', { EX: 15 * 60 });
+    await redisClient.set(lockKey, req.sessionID, { EX: 15 * 60 });
 
     res.status(200).json({ message: 'Seat reserved' });
   } catch (error) {
@@ -129,6 +129,7 @@ router.post('/unselect', async (req: Request, res: Response): Promise<void> => {
       res.status(404).json({ error: 'Seat not reserved' });
       return;
     }
+    console.log(`Lock owner: ${lockOwner}, Session ID: ${req.sessionID}`);
     if (lockOwner !== req.sessionID) {
       res.status(403).json({ error: 'Seat reserved by another user' });
       return;

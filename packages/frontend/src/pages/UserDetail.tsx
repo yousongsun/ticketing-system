@@ -77,7 +77,9 @@ const UserDetail: React.FC = () => {
       console.log('Form submitted:', formPayload);
 
       axios
-        .post(`${API_BASE_URL}/api/v1/orders`, formPayload)
+        .post(`${API_BASE_URL}/api/v1/orders`, formPayload, {
+          withCredentials: true,
+        })
         .then(async (response) => {
           console.log('Order created successfully:', response.data);
           const { sessionId } = response.data;

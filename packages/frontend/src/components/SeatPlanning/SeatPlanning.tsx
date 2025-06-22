@@ -60,6 +60,7 @@ export const SeatPlanning: React.FC = () => {
           `${API_BASE_URL}/api/v1/seats/all`,
           {
             params: { date: selectedDate },
+            withCredentials: true,
           },
         );
         dispatch(initializeSeatData(response.data));
@@ -84,20 +85,28 @@ export const SeatPlanning: React.FC = () => {
     // If the seat is not already selected attempt to reserve it via API
     if (!seat.selected) {
       try {
-        await axios.post(`${API_BASE_URL}/api/v1/seats/select`, {
-          seatNumber: `${seat.rowLabel}${seat.number}`,
-          date: selectedDate,
-        });
+        await axios.post(
+          `${API_BASE_URL}/api/v1/seats/select`,
+          {
+            seatNumber: `${seat.rowLabel}${seat.number}`,
+            date: selectedDate,
+          },
+          { withCredentials: true },
+        );
         dispatch(toggleSeatSelection(seat));
       } catch (error) {
         console.error('Failed to reserve seat:', error);
       }
     } else {
       try {
-        await axios.post(`${API_BASE_URL}/api/v1/seats/unselect`, {
-          seatNumber: `${seat.rowLabel}${seat.number}`,
-          date: selectedDate,
-        });
+        await axios.post(
+          `${API_BASE_URL}/api/v1/seats/unselect`,
+          {
+            seatNumber: `${seat.rowLabel}${seat.number}`,
+            date: selectedDate,
+          },
+          { withCredentials: true },
+        );
         dispatch(toggleSeatSelection(seat));
       } catch (error) {
         console.error('Failed to release seat:', error);
