@@ -1,9 +1,9 @@
 import type React from 'react';
 import { Link, Route, Routes } from 'react-router';
-
 import { Footer } from './components/Footer';
 import { LoadingComponent } from './components/LoadingComponent';
 import { Menu } from './components/Menu';
+import CancelPage from './pages/CancelPage';
 import HomePage from './pages/Home';
 import { SponsorPage } from './pages/SponsorPage';
 import SuccessPage from './pages/SuccessPage';
@@ -91,6 +91,15 @@ const App: React.FC = () => {
             <>
               <Menu />
               <SuccessPage />
+            </>
+          }
+        />
+        <Route
+          path="/cancel"
+          element={
+            <>
+              <Menu />
+              <CancelPage />
             </>
           }
         />

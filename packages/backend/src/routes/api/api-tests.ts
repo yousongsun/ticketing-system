@@ -12,11 +12,6 @@ router.get('/hello', (_req: Request, res: Response): void => {
   });
 });
 
-declare module 'express-session' {
-  interface SessionData {
-    views?: number;
-  }
-}
 router.get('/test-session', (req: Request, res: Response) => {
   if (req.session.views) {
     req.session.views++;

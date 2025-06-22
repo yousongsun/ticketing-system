@@ -10,6 +10,15 @@ import {
 } from '../../data/order-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
 
+declare module 'express-session' {
+  interface SessionData {
+    views?: number;
+    userId?: string;
+    isLoggedIn?: boolean;
+    orderId?: string;
+  }
+}
+
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 if (!stripeKey) throw new Error('Missing STRIPE_SECRET_KEY in environment');
 
@@ -114,8 +123,13 @@ router.post(
         return;
       }
 
+      req.session.orderId = (
+        order._id as string | { toString(): string }
+      ).toString();
+
       res.status(201).json({
         sessionId: order.checkoutSessionId,
+        orderId: order._id,
       });
     } catch (error) {
       res.sendStatus(422);

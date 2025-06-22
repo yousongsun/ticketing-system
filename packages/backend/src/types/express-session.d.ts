@@ -5,5 +5,6 @@ declare module 'express-session' {
     views?: number;
     userId?: string;
     isLoggedIn?: boolean;
+    orderId?: string;
   }
 }
