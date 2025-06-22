@@ -8,7 +8,9 @@ import {
   retrieveOrderList,
   updateOrder,
 } from '../../data/order-dao';
+import { markSeatsUnavailable } from '../../data/seat-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
+import redisClient from '../../redis/redisClient';
 
 declare module 'express-session' {
   interface SessionData {
@@ -252,6 +254,18 @@ router.get(
         // Update order status to paid
         order.paid = true;
         await updateOrder(order);
+        await markSeatsUnavailable(
+          order.selectedDate,
+          order.selectedSeats.map((s) => ({
+            rowLabel: s.rowLabel,
+            number: s.number,
+          })),
+        );
+        for (const seat of order.selectedSeats) {
+          const lockKey = `seatlock:${order.selectedDate}:${seat.rowLabel}-${seat.number}`;
+          await redisClient.del(lockKey);
+        }
+        await redisClient.del(`seats:${order.selectedDate}`);
       }
       res.status(200).json({ paymentStatus: paymentIntentDetails.status });
     } catch (error: unknown) {

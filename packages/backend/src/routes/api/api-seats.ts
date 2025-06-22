@@ -1,6 +1,9 @@
 import type { SeatType } from '@medrevue/types';
 import express, { type Request, type Response } from 'express';
-import { retrieveSeatListByDate } from '../../data/seat-dao';
+import {
+  retrieveSeatListByDate,
+  retrieveUnavailableSeatsByDate,
+} from '../../data/seat-dao';
 import redisClient from '../../redis/redisClient';
 
 const router = express.Router();
@@ -32,6 +35,26 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
     const cached = await redisClient.get(redisKey);
     if (cached) {
       seatData = JSON.parse(cached);
+      const dbUnavailable = await retrieveUnavailableSeatsByDate(date);
+      let changed = false;
+      if (seatData) {
+        for (const seat of dbUnavailable) {
+          const row = seatData[seat.rowLabel];
+          if (row) {
+            const s = row.find((r) => r.number === seat.number);
+            if (s?.available) {
+              s.available = false;
+              s.selected = false;
+              changed = true;
+            }
+          }
+        }
+      }
+      if (changed) {
+        await redisClient.set(redisKey, JSON.stringify(seatData), {
+          EX: 30 * 60 * 60,
+        });
+      }
     } else {
       const seats = await retrieveSeatListByDate(date);
 
@@ -45,7 +68,7 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
       }
 
       await redisClient.set(redisKey, JSON.stringify(seatData), {
-        EX: 3 * 24 * 60 * 60,
+        EX: 30 * 60 * 60,
       });
     }
 
