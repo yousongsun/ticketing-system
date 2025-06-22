@@ -93,7 +93,15 @@ export const SeatPlanning: React.FC = () => {
         console.error('Failed to reserve seat:', error);
       }
     } else {
-      dispatch(toggleSeatSelection(seat));
+      try {
+        await axios.post(`${API_BASE_URL}/api/v1/seats/unselect`, {
+          seatNumber: `${seat.rowLabel}${seat.number}`,
+          date: selectedDate,
+        });
+        dispatch(toggleSeatSelection(seat));
+      } catch (error) {
+        console.error('Failed to release seat:', error);
+      }
     }
   };
 

@@ -58,8 +58,9 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
         if (row) {
           const seat = row.find((s) => s.number === seatNum);
           if (seat) {
+            const lockOwner = await redisClient.get(key);
             seat.available = false;
-            seat.selected = true;
+            seat.selected = lockOwner === req.sessionID;
           }
         }
       }
@@ -103,6 +104,41 @@ router.post('/select', async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to reserve seat' });
+  }
+});
+
+router.post('/unselect', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { seatNumber, date } = req.body;
+    if (!seatNumber || !date) {
+      res.status(400).json({ error: 'Missing seatNumber or date' });
+      return;
+    }
+
+    const match = /^([A-Za-z]+)(\d+)$/.exec(seatNumber);
+    if (!match) {
+      res.status(400).json({ error: 'Invalid seat number format' });
+      return;
+    }
+    const rowLabel = match[1];
+    const number = Number.parseInt(match[2], 10);
+
+    const lockKey = `seatlock:${date}:${rowLabel}-${number}`;
+    const lockOwner = await redisClient.get(lockKey);
+    if (!lockOwner) {
+      res.status(404).json({ error: 'Seat not reserved' });
+      return;
+    }
+    if (lockOwner !== req.sessionID) {
+      res.status(403).json({ error: 'Seat reserved by another user' });
+      return;
+    }
+
+    await redisClient.del(lockKey);
+    res.status(200).json({ message: 'Seat released' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to release seat' });
   }
 });
 
