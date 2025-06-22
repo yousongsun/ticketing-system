@@ -1,5 +1,6 @@
 import type React from 'react';
 import { Link, Route, Routes } from 'react-router';
+import { Cookie } from './components/Cookie';
 import { Footer } from './components/Footer';
 import { LoadingComponent } from './components/LoadingComponent';
 import { Menu } from './components/Menu';
@@ -105,6 +106,7 @@ const App: React.FC = () => {
         />
       </Routes>
       <Footer />
+      <Cookie />
     </>
   );
 };
