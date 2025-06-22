@@ -6,7 +6,7 @@ export const Menu: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="relative flex justify-between items-center h-20 w-full px-5 z-10 bg-[#1a1a1a]">
+    <header className="relative flex justify-between items-center h-20 w-full px-5 z-50 bg-[#1a1a1a]">
       <Link
         to="/"
         className="font-poppins font-bold text-2xl leading-[42px] text-[#f2f2f2] no-underline"
@@ -39,7 +39,7 @@ export const Menu: React.FC = () => {
       <nav
         className={`${
           open ? 'flex' : 'hidden'
-        } md:flex flex-col md:flex-row gap-6 md:gap-20 items-center absolute md:static top-full left-0 w-full bg-[#1a1a1a] md:w-auto p-5 md:p-0`}
+        } md:flex flex-col md:flex-row gap-6 md:gap-20 items-center absolute md:static top-full left-0 w-full bg-[#1a1a1a] md:w-auto p-5 md:p-0 z-50`}
       >
         <Link
           to="/"

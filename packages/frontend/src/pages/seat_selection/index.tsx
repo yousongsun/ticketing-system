@@ -63,7 +63,7 @@ const SeatSelectionPage: React.FC = () => {
   }, [selectedSeats]);
 
   return (
-    <div className="relative select-none overflow-hidden overscroll-none touch-none cursor-default h-screen">
+    <div className="relative select-none overflow-hidden overscroll-none cursor-default h-screen">
       {/* Background Blur */}
       <img
         src={BackgroundBlur}
@@ -74,7 +74,7 @@ const SeatSelectionPage: React.FC = () => {
       {/* Main container */}
       <div className="relative flex flex-col md:flex-row items-center justify-between h-full bg-[#070507] z-1 gap-x-8 p-4">
         {/* Seat Selection Container */}
-        <div className="w-full md:w-[60%] h-1/2 md:h-full flex items-center justify-center overflow-hidden border-2 border-[#E5CE63]/10 rounded-xl mb-4 md:mb-0">
+        <div className="w-full md:w-[60%] h-1/2 md:h-full flex items-center justify-center overflow-hidden border-2 border-[#E5CE63]/10 rounded-xl mb-4 md:mb-0 touch-none">
           <TransformWrapper
             wheel={{ step: 50 }}
             pinch={{ step: 5 }}

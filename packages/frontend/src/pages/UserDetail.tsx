@@ -113,9 +113,9 @@ const UserDetail: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmitAll}
-      className="min-h-screen bg-[#070507] flex flex-col items-center justify-center p-8 relative overflow-hidden"
+      className="min-h-screen bg-[#070507] flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden"
     >
-      <div className="max-w-6xl w-full p-2 relative z-10">
+      <div className="w-full md:max-w-6xl p-2 relative z-10">
         <div className="flex justify-start mb-4">
           <button
             type="button"
