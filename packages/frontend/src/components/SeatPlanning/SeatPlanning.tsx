@@ -80,8 +80,21 @@ export const SeatPlanning: React.FC = () => {
   // }, [dispatch, initialized]);
 
   // Handle seat selection
-  const onSeatSelect = (seat: SeatType) => {
-    dispatch(toggleSeatSelection(seat));
+  const onSeatSelect = async (seat: SeatType) => {
+    // If the seat is not already selected attempt to reserve it via API
+    if (!seat.selected) {
+      try {
+        await axios.post(`${API_BASE_URL}/api/v1/seats/select`, {
+          seatNumber: `${seat.rowLabel}${seat.number}`,
+          date: selectedDate,
+        });
+        dispatch(toggleSeatSelection(seat));
+      } catch (error) {
+        console.error('Failed to reserve seat:', error);
+      }
+    } else {
+      dispatch(toggleSeatSelection(seat));
+    }
   };
 
   // Render each wing of seats separately
