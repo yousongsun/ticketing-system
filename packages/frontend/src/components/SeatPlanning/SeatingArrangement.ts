@@ -99,9 +99,9 @@ const generateMockSeatData = () => {
         seatData[row.label].push({
           number: i,
           rowLabel: row.label,
-          available: Math.random() > 0.2,
+          available: true,
           selected: false,
-          seatType: Math.random() > 0.1 ? 'Standard' : 'VIP',
+          seatType: row.label === 'H' || row.label === 'I' ? 'VIP' : 'Standard',
         });
       }
     }
