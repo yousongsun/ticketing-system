@@ -36,8 +36,8 @@ const UserDetail: React.FC = () => {
   );
 
   // Calculate total price with student discount
-  const vipPrice = isStudent ? 70 : 80;
-  const normalPrice = isStudent ? 50 : 60;
+  const vipPrice = 45;
+  const normalPrice = isStudent ? 25 : 35;
   const vipCount = selectedSeats.filter(
     (seat) => seat.seatType === 'VIP',
   ).length;

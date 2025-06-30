@@ -25,8 +25,8 @@ async function createOrder(
   totalPrice: number,
 ) {
   try {
-    const vipPrice = isStudent ? 70 : 80;
-    const normalPrice = isStudent ? 50 : 60;
+    const vipPrice = 45;
+    const normalPrice = isStudent ? 25 : 35;
     const lineItems = selectedSeats.map((seat) => ({
       name: `MedRevue Ticket (${seat.seatType}) - Row ${seat.rowLabel} Seat ${seat.number}`,
       price: seat.seatType === 'VIP' ? vipPrice : normalPrice,
