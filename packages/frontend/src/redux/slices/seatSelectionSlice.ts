@@ -10,9 +10,9 @@ interface SeatSelectionState {
 }
 
 export const SHOW_DATES = [
-  { label: '14 Aug, 7:30pm - 10:30pm', value: '2025-08-14' },
-  { label: '15 Aug, 7:30pm - 10:30pm', value: '2025-08-15' },
-  { label: '16 Aug, 7:30pm - 10:30pm', value: '2025-08-16' },
+  { label: '14 Aug, 7:30pm - 10:00pm', value: '2025-08-14' },
+  { label: '15 Aug, 7:30pm - 10:00pm', value: '2025-08-15' },
+  { label: '16 Aug, 7:30pm - 10:00pm', value: '2025-08-16' },
 ];
 
 const initialState: SeatSelectionState = {

@@ -324,7 +324,10 @@ const HomePage: React.FC = () => {
           ref={TextZoomRef}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#FFFBE8] transform font-inter font-semibold text-center flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 lg:flex-row lg:space-y-0 lg:space-x-15 lg:bottom-auto lg:top-[85%] text-[clamp(1.125rem,4vw,1.875rem)]"
         >
-          <h2> 14 Aug, 7:30pm - 16 Aug, 10:30 pm </h2>
+          <h2>
+            {' '}
+            14 Aug, 7:30pm - 16 Aug, 10:00 pm (doors will open at 6:45pm){' '}
+          </h2>
 
           <h2> Sky City Theatre </h2>
         </div>

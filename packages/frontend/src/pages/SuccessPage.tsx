@@ -128,7 +128,7 @@ const SuccessPage: React.FC = () => {
               <div className="flex justify-end gap-4 text-[#FFF0A2] font-bold text-[18px]">
                 <span>14th August</span>
                 <span>|</span>
-                <span>07:30pm - 10:30pm</span>
+                <span>07:30pm - 10:00pm</span>
               </div>
 
               <h2 className="text-[24px] sm:text-[32px] font-bold text-[#E5CE63]">
@@ -161,7 +161,7 @@ const SuccessPage: React.FC = () => {
                       </div>
                       <p>14th August</p>
                       <p>Seats: XX, XX</p>
-                      <p>07:30pm - 10:30pm</p>
+                      <p>07:30pm - 10:00pm</p>
                     </div>
                   </div>
 
