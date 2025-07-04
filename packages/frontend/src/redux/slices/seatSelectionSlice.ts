@@ -36,12 +36,27 @@ const seatSelectionSlice = createSlice({
         seat.number === number ? { ...seat, selected: !seat.selected } : seat,
       );
     },
+    setSeatUnavailable: (
+      state,
+      action: PayloadAction<{ rowLabel: string; number: number }>,
+    ) => {
+      const { rowLabel, number } = action.payload;
+      state.seatData[rowLabel] = state.seatData[rowLabel].map((seat) =>
+        seat.number === number
+          ? { ...seat, available: false, selected: false }
+          : seat,
+      );
+    },
     setSelectedDate: (state, action: PayloadAction<string>) => {
       state.selectedDate = action.payload;
     },
   },
 });
 
-export const { initializeSeatData, toggleSeatSelection, setSelectedDate } =
-  seatSelectionSlice.actions;
+export const {
+  initializeSeatData,
+  toggleSeatSelection,
+  setSelectedDate,
+  setSeatUnavailable,
+} = seatSelectionSlice.actions;
 export default seatSelectionSlice.reducer;
