@@ -33,6 +33,16 @@ async function createOrder(
       quantity: 1,
     }));
 
+    // Calculate booking fee as 3% of the ticket subtotal
+    const bookingFee = +(totalPrice * 0.03).toFixed(2);
+    const totalPriceWithFee = +(totalPrice + bookingFee).toFixed(2);
+
+    lineItems.push({
+      name: 'Booking Fee',
+      price: bookingFee,
+      quantity: 1,
+    });
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems.map(
@@ -67,7 +77,7 @@ async function createOrder(
       isStudent,
       selectedDate,
       selectedSeats,
-      totalPrice,
+      totalPrice: totalPriceWithFee,
       checkoutSessionId,
       paid: false,
     });

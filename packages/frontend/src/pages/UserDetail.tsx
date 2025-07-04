@@ -44,7 +44,9 @@ const UserDetail: React.FC = () => {
   const normalCount = selectedSeats.filter(
     (seat) => seat.seatType === 'Standard',
   ).length;
-  const totalPrice = vipCount * vipPrice + normalCount * normalPrice;
+  const subTotal = vipCount * vipPrice + normalCount * normalPrice;
+  const bookingFee = +(subTotal * 0.03).toFixed(2);
+  const totalPrice = +(subTotal + bookingFee).toFixed(2);
 
   const validateForm = () => {
     const newErrors: Partial<Record<string, string>> = {};
@@ -72,7 +74,7 @@ const UserDetail: React.FC = () => {
         isStudent,
         selectedDate,
         selectedSeats,
-        totalPrice,
+        totalPrice: subTotal,
       };
       console.log('Form submitted:', formPayload);
 
@@ -254,6 +256,18 @@ const UserDetail: React.FC = () => {
                 )}
               </div>
               <div className="mt-3 text-lg">
+                <span className="font-semibold">Subtotal: </span>
+                <span className="text-[#E5CE63] font-bold">
+                  {subTotal > 0 ? `${subTotal} NZD` : '0 NZD'}
+                </span>
+              </div>
+              <div className="mt-1 text-lg">
+                <span className="font-semibold">Booking Fee (3%): </span>
+                <span className="text-[#E5CE63] font-bold">
+                  {bookingFee > 0 ? `${bookingFee} NZD` : '0 NZD'}
+                </span>
+              </div>
+              <div className="mt-1 text-lg">
                 <span className="font-semibold">Total Price: </span>
                 <span className="text-[#E5CE63] font-bold">
                   {totalPrice > 0 ? `${totalPrice} NZD` : '0 NZD'}
