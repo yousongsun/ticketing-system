@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   initializeSeatData,
+  setSeatUnavailable,
   setSelectedDate,
   toggleSeatSelection,
 } from '../../redux/slices/seatSelectionSlice';
@@ -95,6 +96,14 @@ export const SeatPlanning: React.FC = () => {
         );
         dispatch(toggleSeatSelection(seat));
       } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 409) {
+          dispatch(
+            setSeatUnavailable({
+              rowLabel: seat.rowLabel,
+              number: seat.number,
+            }),
+          );
+        }
         console.error('Failed to reserve seat:', error);
       }
     } else {

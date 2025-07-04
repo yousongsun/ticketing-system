@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { Seat } from '../models/seat';
+import { Seat } from '../models/Seat';
 import { seedSeatData } from '../utils/seedSeatData';
 
 dotenv.config();

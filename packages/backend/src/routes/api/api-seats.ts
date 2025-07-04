@@ -4,7 +4,9 @@ import {
   retrieveSeatListByDate,
   retrieveUnavailableSeatsByDate,
 } from '../../data/seat-dao';
+import { Seat } from '../../models/Seat';
 import redisClient from '../../redis/redisClient';
+import { SEAT_TTL_SECONDS } from '../../redis/seatCache';
 
 const router = express.Router();
 
@@ -52,7 +54,7 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
       }
       if (changed) {
         await redisClient.set(redisKey, JSON.stringify(seatData), {
-          EX: 30 * 60 * 60,
+          EX: SEAT_TTL_SECONDS,
         });
       }
     } else {
@@ -68,7 +70,7 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
       }
 
       await redisClient.set(redisKey, JSON.stringify(seatData), {
-        EX: 30 * 60 * 60,
+        EX: SEAT_TTL_SECONDS,
       });
     }
 
@@ -168,6 +170,57 @@ router.post('/unselect', async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to release seat' });
+  }
+});
+
+router.post('/verify', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { seats, date } = req.body as {
+      seats: { rowLabel: string; number: number }[];
+      date: string;
+    };
+
+    if (!date || !Array.isArray(seats) || seats.length === 0) {
+      res.status(400).json({ error: 'Missing date or seats' });
+      return;
+    }
+
+    const seatDocs = await Seat.find({
+      date,
+      $or: seats.map((s) => ({ rowLabel: s.rowLabel, number: s.number })),
+    })
+      .select('rowLabel number available')
+      .exec();
+
+    const invalidSeats: string[] = [];
+
+    for (const seat of seats) {
+      const doc = seatDocs.find(
+        (d) => d.rowLabel === seat.rowLabel && d.number === seat.number,
+      );
+      if (!doc || !doc.available) {
+        invalidSeats.push(`${seat.rowLabel}-${seat.number}`);
+        continue;
+      }
+
+      const lockKey = `seatlock:${date}:${seat.rowLabel}-${seat.number}`;
+      const lockOwner = await redisClient.get(lockKey);
+      if (lockOwner !== req.sessionID) {
+        invalidSeats.push(`${seat.rowLabel}-${seat.number}`);
+      }
+    }
+
+    if (invalidSeats.length > 0) {
+      res
+        .status(409)
+        .json({ error: 'Seats no longer available', invalidSeats });
+      return;
+    }
+
+    res.status(200).json({ message: 'Seats verified' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to verify seats' });
   }
 });
 

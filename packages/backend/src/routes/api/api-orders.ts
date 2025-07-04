@@ -11,6 +11,7 @@ import {
 import { markSeatsUnavailable } from '../../data/seat-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
 import redisClient from '../../redis/redisClient';
+import { refreshSeatCache } from '../../redis/seatCache';
 
 declare module 'express-session' {
   interface SessionData {
@@ -266,6 +267,7 @@ router.get(
           await redisClient.del(lockKey);
         }
         await redisClient.del(`seats:${order.selectedDate}`);
+        await refreshSeatCache(order.selectedDate);
       }
       res.status(200).json({ paymentStatus: paymentIntentDetails.status });
     } catch (error: unknown) {

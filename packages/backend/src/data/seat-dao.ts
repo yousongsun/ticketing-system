@@ -1,4 +1,4 @@
-import { type ISeat, Seat } from '../models/seat';
+import { type ISeat, Seat } from '../models/Seat';
 
 async function retrieveSeatListByDate(date: string): Promise<ISeat[]> {
   return await Seat.find({ date })
