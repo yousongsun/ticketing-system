@@ -5,6 +5,7 @@ import {
   retrieveUnavailableSeatsByDate,
 } from '../../data/seat-dao';
 import redisClient from '../../redis/redisClient';
+import { SEAT_TTL_SECONDS } from '../../redis/seatCache';
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
       }
       if (changed) {
         await redisClient.set(redisKey, JSON.stringify(seatData), {
-          EX: 30 * 60 * 60,
+          EX: SEAT_TTL_SECONDS,
         });
       }
     } else {
@@ -68,7 +69,7 @@ router.get('/all', async (req: Request, res: Response): Promise<void> => {
       }
 
       await redisClient.set(redisKey, JSON.stringify(seatData), {
-        EX: 30 * 60 * 60,
+        EX: SEAT_TTL_SECONDS,
       });
     }
 
