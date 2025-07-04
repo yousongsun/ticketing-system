@@ -88,20 +88,41 @@ export const SEATING_ARRANGEMENT: SeatingArrangement = {
   ],
 };
 
+const MID_SEAT_RANGE: Record<string, { start: number; end: number }> =
+  SEATING_ARRANGEMENT.middle.reduce(
+    (acc, row) => {
+      acc[row.label] = { start: row.startSeat, end: row.endSeat };
+      return acc;
+    },
+    {} as Record<string, { start: number; end: number }>,
+  );
+
 const generateMockSeatData = () => {
   const seatData: SeatData = {};
   for (const wing of Object.values(SEATING_ARRANGEMENT)) {
     for (const row of wing) {
+      const midRange = MID_SEAT_RANGE[row.label];
       for (let i = row.startSeat; i <= row.endSeat; i++) {
         if (!seatData[row.label]) {
           seatData[row.label] = [];
         }
+        const isVip =
+          (row.label === 'H' || row.label === 'I') &&
+          midRange &&
+          i >= midRange.start &&
+          i <= midRange.end;
+        const available = !(
+          row.label === 'J' &&
+          midRange &&
+          i >= midRange.start &&
+          i <= midRange.end
+        );
         seatData[row.label].push({
           number: i,
           rowLabel: row.label,
-          available: true,
+          available,
           selected: false,
-          seatType: row.label === 'H' || row.label === 'I' ? 'VIP' : 'Standard',
+          seatType: isVip ? 'VIP' : 'Standard',
         });
       }
     }
