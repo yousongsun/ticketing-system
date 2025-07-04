@@ -1,3 +1,4 @@
+import axios from 'axios';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,13 @@ import type { SeatType } from '@medrevue/types';
 import { useNavigate } from 'react-router';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import BackgroundBlur from '../../assets/BackgroundBlur.svg';
-import { toggleSeatSelection } from '../../redux/slices/seatSelectionSlice';
+import {
+  initializeSeatData,
+  toggleSeatSelection,
+} from '../../redux/slices/seatSelectionSlice';
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 const SeatSelectionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -151,9 +158,51 @@ const SeatSelectionPage: React.FC = () => {
               <button
                 type="button"
                 className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2 sticky bottom-4"
-                onClick={() => {
-                  console.log('Selected Seats:', selectedSeats);
-                  navigate('/user-detail');
+                onClick={async () => {
+                  const payload = {
+                    date: selectedDate,
+                    seats: selectedSeats.map((s) => ({
+                      rowLabel: s.rowLabel,
+                      number: s.number,
+                    })),
+                  };
+                  try {
+                    await axios.post(
+                      `${API_BASE_URL}/api/v1/seats/verify`,
+                      payload,
+                      {
+                        withCredentials: true,
+                      },
+                    );
+                    navigate('/user-detail');
+                  } catch (error: unknown) {
+                    if (
+                      axios.isAxiosError(error) &&
+                      error.response?.status === 409
+                    ) {
+                      // Seats are no longer valid, refresh seat data
+                      alert(
+                        'Some seats are no longer available. Please reselect.',
+                      );
+                      try {
+                        const response = await axios.get(
+                          `${API_BASE_URL}/api/v1/seats/all`,
+                          {
+                            params: { date: selectedDate },
+                            withCredentials: true,
+                          },
+                        );
+                        dispatch(initializeSeatData(response.data));
+                      } catch (fetchError) {
+                        console.error(
+                          'Failed to refresh seat data:',
+                          fetchError,
+                        );
+                      }
+                    } else {
+                      console.error('Failed to verify seats:', error);
+                    }
+                  }
                 }}
               >
                 Next Step →
