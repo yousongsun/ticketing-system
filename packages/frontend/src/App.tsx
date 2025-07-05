@@ -6,6 +6,7 @@ import { LoadingComponent } from './components/LoadingComponent';
 import { Menu } from './components/Menu';
 import CancelPage from './pages/CancelPage';
 import HomePage from './pages/Home';
+import ReturnPolicyPage from './pages/ReturnPolicy';
 import { SponsorPage } from './pages/SponsorPage';
 import SuccessPage from './pages/SuccessPage';
 import UserDetail from './pages/UserDetail';
@@ -101,6 +102,15 @@ const App: React.FC = () => {
             <>
               <Menu />
               <CancelPage />
+            </>
+          }
+        />
+        <Route
+          path="/return-policy"
+          element={
+            <>
+              <Menu />
+              <ReturnPolicyPage />
             </>
           }
         />

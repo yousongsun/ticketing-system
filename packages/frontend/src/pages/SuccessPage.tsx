@@ -2,15 +2,39 @@ import axios from 'axios';
 import type React from 'react';
 import medrevuePoster from '../assets/medrevue-poster.png';
 
+import type { OrderType } from '@medrevue/types';
 import { useEffect, useRef, useState } from 'react';
 import checkCircle from '../assets/check-circle.svg';
+import { SHOW_DATES } from '../redux/slices/seatSelectionSlice';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
+function formatDay(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? 'st'
+      : day % 10 === 2 && day !== 12
+        ? 'nd'
+        : day % 10 === 3 && day !== 13
+          ? 'rd'
+          : 'th';
+  const month = date.toLocaleDateString('en-NZ', { month: 'long' });
+  return `${day}${suffix} ${month}`;
+}
+
+function getTimeRange(dateString: string): string {
+  return (
+    SHOW_DATES.find((d) => d.value === dateString)?.label.split(', ')[1] || ''
+  );
+}
+
 const SuccessPage: React.FC = () => {
   const boxText = 'text-[#FFFBE8] font-[Poppins]';
   const [status, setStatus] = useState<string>('pending');
+  const [order, setOrder] = useState<OrderType | null>(null);
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -44,6 +68,29 @@ const SuccessPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const orderId = sessionStorage.getItem('orderId');
+    if (!orderId || status !== 'succeeded') return;
+
+    const fetchOrder = async () => {
+      try {
+        const res = await axios.get(
+          `${API_BASE_URL}/api/v1/orders/${orderId}`,
+          {
+            withCredentials: true,
+          },
+        );
+        if (res.data.order) {
+          setOrder(res.data.order);
+        }
+      } catch (e) {
+        console.error('Failed to fetch order details', e);
+      }
+    };
+
+    fetchOrder();
+  }, [status]);
+
   if (status === 'missing') {
     return (
       <div className="min-h-screen w-full bg-[#070507] text-[#FFFBE8] flex items-center justify-center">
@@ -51,6 +98,13 @@ const SuccessPage: React.FC = () => {
       </div>
     );
   }
+
+  const dateLabel = order ? formatDay(order.selectedDate) : '';
+  const timeRange = order ? getTimeRange(order.selectedDate) : '';
+  const seatList = order
+    ? order.selectedSeats.map((s) => `${s.rowLabel}${s.number}`).join(', ')
+    : '';
+  const seatCount = order ? order.selectedSeats.length : 0;
 
   return (
     <div className="min-h-screen w-full bg-[#070507] text-[#FFFBE8] font-opensans px-6 py-12 sm:px-12 md:px-20 lg:px-32 flex flex-col items-center justify-center">
@@ -126,9 +180,9 @@ const SuccessPage: React.FC = () => {
             {/* Right */}
             <div className="w-full lg:w-1/2 text-right space-y-6">
               <div className="flex justify-end gap-4 text-[#FFF0A2] font-bold text-[18px]">
-                <span>14th August</span>
+                <span>{dateLabel}</span>
                 <span>|</span>
-                <span>07:30pm - 10:00pm</span>
+                <span>{timeRange}</span>
               </div>
 
               <h2 className="text-[24px] sm:text-[32px] font-bold text-[#E5CE63]">
@@ -157,18 +211,19 @@ const SuccessPage: React.FC = () => {
                     <div className={`text-left ${boxText} text-sm space-y-1`}>
                       <div className="flex justify-between gap-12">
                         <span className="font-bold">Back to the Suture</span>
-                        <span className="text-sm font-normal">×2</span>
+                        <span className="text-sm font-normal">
+                          ×{seatCount}
+                        </span>
                       </div>
-                      <p>14th August</p>
-                      <p>Seats: XX, XX</p>
-                      <p>07:30pm - 10:00pm</p>
+                      <p>{dateLabel}</p>
+                      <p>Seats: {seatList}</p>
+                      <p>{timeRange}</p>
                     </div>
                   </div>
 
                   {/* Email */}
                   <p className={`text-sm ${boxText} text-left px-2`}>
-                    {' '}
-                    dpar783@aucklanduni.ac.nz
+                    {order?.email}
                   </p>
 
                   <hr className="border-[#FFFBE8] opacity-40" />
@@ -178,13 +233,13 @@ const SuccessPage: React.FC = () => {
                     className={`flex justify-between font-bold ${boxText} text-sm px-2`}
                   >
                     <span>Paid</span>
-                    <span>$40.00</span>
+                    <span>${order ? order.totalPrice.toFixed(2) : ''}</span>
                   </div>
                   <hr className="border-[#FFFBE8] opacity-40" />
 
                   {/* Returns */}
                   <a
-                    href="/"
+                    href="/return-policy"
                     className={`underline text-sm ${boxText} hover:text-[#FFF0A2] block text-left px-2`}
                   >
                     Read about our return policy
