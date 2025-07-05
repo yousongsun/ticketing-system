@@ -98,10 +98,10 @@ const SuccessPage: React.FC = () => {
                 </p>
                 <p>
                   {' '}
-                  Thank you for purchasing a ticket to Back to the Suture,
-                  proudly presented by MedRevue! We're thrilled to have you join
-                  us for an unforgettable night of laughs, music, and medical
-                  mayhem.
+                  Thank you for purchasing a ticket to Auckland Medical Revue
+                  2025: Back to the Suture presented by Waitemata Endoscopy!
+                  We're thrilled to have you join us for an unforgettable night
+                  of laughs, music, and medical mayhem.
                 </p>
                 <p> All profits go towards Médecins Sans Frontières (MSF). </p>
               </div>

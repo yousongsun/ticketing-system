@@ -5,8 +5,11 @@
 
 import type React from 'react';
 
+import afterLogo from '../../assets/after.png';
+import anzcaLogo from '../../assets/anzca.png';
 import medworldLogo from '../../assets/medworld.png';
 import mpsLogo from '../../assets/mps.png';
+import oneHealthLogo from '../../assets/one health.jpeg';
 import pizzaclubLogo from '../../assets/pizza-club.png';
 import respmedLogo from '../../assets/respmed.png';
 import tamakihealthLogo from '../../assets/tamaki-health.png';
@@ -62,17 +65,36 @@ export const Sponsors: React.FC = () => {
         <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
           BRONZE
         </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
-          <img
-            src={medworldLogo}
-            alt="MedWorld Institute"
-            className="md:h-20 h-10 object-contain bg-white"
-          />
-          <img
-            src={mpsLogo}
-            alt="MPS"
-            className="md:h-20 h-10 object-contain bg-white"
-          />
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-row justify-center items-center gap-5">
+            <img
+              src={mpsLogo}
+              alt="MPS"
+              className="md:h-20 h-10 object-contain bg-white"
+            />
+            <img
+              src={anzcaLogo}
+              alt="anzca"
+              className="md:h-20 h-10 object-contain bg-white"
+            />
+            <img
+              src={afterLogo}
+              alt="After"
+              className="md:h-20 h-10 object-contain bg-white"
+            />
+            <img
+              src={oneHealthLogo}
+              alt="One Health"
+              className="md:h-20 h-10 object-contain bg-white"
+            />
+          </div>
+          <div className="flex flex-row justify-center items-center gap-5">
+            <img
+              src={medworldLogo}
+              alt="MedWorld Institute"
+              className="md:h-20 h-10 object-contain bg-white"
+            />
+          </div>
         </div>
       </div>
     </div>
