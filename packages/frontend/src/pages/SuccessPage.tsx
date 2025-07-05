@@ -184,7 +184,7 @@ const SuccessPage: React.FC = () => {
 
                   {/* Returns */}
                   <a
-                    href="/"
+                    href="/return-policy"
                     className={`underline text-sm ${boxText} hover:text-[#FFF0A2] block text-left px-2`}
                   >
                     Read about our return policy
