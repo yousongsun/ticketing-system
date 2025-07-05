@@ -10,6 +10,11 @@ const stripe = new Stripe(stripeKey, {
   apiVersion: '2025-05-28.basil',
 });
 
+const baseFrontendUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5173'
+    : 'https://www.medrevue.co.nz';
+
 async function createOrder(
   firstName: string,
   lastName: string,
@@ -58,8 +63,8 @@ async function createOrder(
         }),
       ),
       mode: 'payment',
-      success_url: 'https://www.medrevue.co.nz/success',
-      cancel_url: 'https://www.medrevue.co.nz/cancel',
+      success_url: `${baseFrontendUrl}/success`,
+      cancel_url: `${baseFrontendUrl}/cancel`,
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
     });
 
