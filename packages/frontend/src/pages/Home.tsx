@@ -271,18 +271,21 @@ const HomePage: React.FC = () => {
 
           <h1
             ref={textRef}
-            className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] mb-8 text-[clamp(2.1rem,8vw,3.75rem)]"
+            className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] text-[clamp(2.1rem,8vw,3.75rem)]"
           >
             BACK TO THE SUTURE
           </h1>
+          <h2 className="text-[#E5CE63] font-inter font-light text-xl mb-8 max-w-[425px] lg:ml-auto text-right">
+            Presented by Waitemata Endoscopy
+          </h2>
 
           <div
             ref={divFadeInRef}
             className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15"
           >
             <p>
-              Our take on the classic: Back to the Future. Very exciting show
-              blurb here, lorem ipsum etc. etcetera etcetera
+              Back to the Suture is a musical comedy inspired by the classic
+              film Back to the Future, but with a medical twist.
             </p>
             <p className="max-w-xs mx-auto space-y-4 lg:max-w-[425px] lg:mx-0">
               Profits go towards Médecins Sans Frontières (MSF).

@@ -79,7 +79,6 @@ const UserDetail: React.FC = () => {
         selectedSeats,
         totalPrice: subTotal,
       };
-      console.log('Form submitted:', formPayload);
 
       axios
         .post(`${API_BASE_URL}/api/v1/orders`, formPayload, {
@@ -106,9 +105,17 @@ const UserDetail: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.error('Error creating order:', error);
-          setErrors({ general: 'Failed to create order. Please try again.' });
-          setSubmitted(false);
+          if (error.response?.status === 409) {
+            console.error('Conflict error:', error);
+            setErrors({
+              general: 'Failed to create order. Please try again.',
+            });
+            navigate('/buy');
+          } else {
+            console.error('Error creating order:', error);
+            setErrors({ general: 'Failed to create order. Please try again.' });
+            setSubmitted(false);
+          }
         });
     } else {
       setSubmitted(false);
@@ -283,6 +290,13 @@ const UserDetail: React.FC = () => {
         {submitted && (
           <p className="text-green-500 mt-4 font-semibold">
             We'll redirect you to the payment page shortly...
+          </p>
+        )}
+        {errors.general && (
+          <p className="text-red-500 mt-4 font-semibold">
+            {errors.general === 'Failed to create order. Please try again.'
+              ? 'Some seats are no longer available. Please reselect your seats.'
+              : errors.general}
           </p>
         )}
       </div>

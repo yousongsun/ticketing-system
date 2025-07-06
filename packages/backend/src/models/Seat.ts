@@ -29,6 +29,8 @@ const seatSchema: Schema<ISeat> = new Schema(
   },
 );
 
+seatSchema.index({ date: 1, rowLabel: 1, number: 1 }, { unique: true });
+
 const Seat: Model<ISeat> =
   mongoose.models.Seat || mongoose.model<ISeat>('Seat', seatSchema);
 
