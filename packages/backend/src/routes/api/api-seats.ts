@@ -129,7 +129,8 @@ router.post('/select', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    await redisClient.set(lockKey, req.sessionID, { EX: 30 * 60 });
+    // Reserve the seat for 10 minutes
+    await redisClient.set(lockKey, req.sessionID, { EX: 10 * 60 });
 
     res.status(200).json({ message: 'Seat reserved' });
   } catch (error) {

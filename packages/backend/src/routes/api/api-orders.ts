@@ -123,6 +123,14 @@ router.post(
         return;
       }
 
+      // Extend the seat lock time by an additional 30 minutes
+      for (const seat of selectedSeats) {
+        const lockKey = `seatlock:${selectedDate}:${seat.rowLabel}-${seat.number}`;
+        const ttl = await redisClient.ttl(lockKey);
+        const newTtl = ttl > 0 ? ttl + 30 * 60 : 30 * 60;
+        await redisClient.expire(lockKey, newTtl);
+      }
+
       const order = await createOrder(
         firstName,
         lastName,
