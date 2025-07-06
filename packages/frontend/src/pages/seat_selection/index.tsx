@@ -21,6 +21,7 @@ const SeatSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [recentlyAddedIds, setRecentlyAddedIds] = useState<string[]>([]);
   const prevSeatIdsRef = useRef<string[]>([]);
+  const [isStudent, setIsStudent] = useState(false);
 
   // Get seat data from Redux
   const seatData = useSelector(
@@ -108,6 +109,9 @@ const SeatSelectionPage: React.FC = () => {
             <h1 className="text-[#E5CE63] font-black text-xl text-right tracking-widest">
               BACK TO THE SUTURE
             </h1>
+            <p className="text-white text-sm mt-2">
+              VIP $45&nbsp;&nbsp;Normal $35&nbsp;&nbsp;Normal student $25
+            </p>
           </div>
           {/* Display list of selected seats */}
           {selectedSeats.length > 0 ? (
@@ -155,58 +159,69 @@ const SeatSelectionPage: React.FC = () => {
                   })}
                 </ul>
               </div>
-              <button
-                type="button"
-                className="text-white text-lg font-bold float-end border-2 rounded-2xl px-2 py-2 sticky bottom-4"
-                onClick={async () => {
-                  const payload = {
-                    date: selectedDate,
-                    seats: selectedSeats.map((s) => ({
-                      rowLabel: s.rowLabel,
-                      number: s.number,
-                    })),
-                  };
-                  try {
-                    await axios.post(
-                      `${API_BASE_URL}/api/v1/seats/verify`,
-                      payload,
-                      {
-                        withCredentials: true,
-                      },
-                    );
-                    navigate('/user-detail');
-                  } catch (error: unknown) {
-                    if (
-                      axios.isAxiosError(error) &&
-                      error.response?.status === 409
-                    ) {
-                      // Seats are no longer valid, refresh seat data
-                      alert(
-                        'Some seats are no longer available. Please reselect.',
+              <div className="flex items-center justify-between mt-4">
+                <label className="flex items-center text-white gap-2">
+                  <input
+                    type="checkbox"
+                    className="accent-[#E5CE63] w-5 h-5"
+                    checked={isStudent}
+                    onChange={(e) => setIsStudent(e.target.checked)}
+                  />
+                  I'm a student
+                </label>
+                <button
+                  type="button"
+                  className="text-white text-lg font-bold border-2 rounded-2xl px-2 py-2"
+                  onClick={async () => {
+                    const payload = {
+                      date: selectedDate,
+                      seats: selectedSeats.map((s) => ({
+                        rowLabel: s.rowLabel,
+                        number: s.number,
+                      })),
+                    };
+                    try {
+                      await axios.post(
+                        `${API_BASE_URL}/api/v1/seats/verify`,
+                        payload,
+                        {
+                          withCredentials: true,
+                        },
                       );
-                      try {
-                        const response = await axios.get(
-                          `${API_BASE_URL}/api/v1/seats/all`,
-                          {
-                            params: { date: selectedDate },
-                            withCredentials: true,
-                          },
+                      navigate('/user-detail', { state: { isStudent } });
+                    } catch (error: unknown) {
+                      if (
+                        axios.isAxiosError(error) &&
+                        error.response?.status === 409
+                      ) {
+                        // Seats are no longer valid, refresh seat data
+                        alert(
+                          'Some seats are no longer available. Please reselect.',
                         );
-                        dispatch(initializeSeatData(response.data));
-                      } catch (fetchError) {
-                        console.error(
-                          'Failed to refresh seat data:',
-                          fetchError,
-                        );
+                        try {
+                          const response = await axios.get(
+                            `${API_BASE_URL}/api/v1/seats/all`,
+                            {
+                              params: { date: selectedDate },
+                              withCredentials: true,
+                            },
+                          );
+                          dispatch(initializeSeatData(response.data));
+                        } catch (fetchError) {
+                          console.error(
+                            'Failed to refresh seat data:',
+                            fetchError,
+                          );
+                        }
+                      } else {
+                        console.error('Failed to verify seats:', error);
                       }
-                    } else {
-                      console.error('Failed to verify seats:', error);
                     }
-                  }
-                }}
-              >
-                Next Step →
-              </button>
+                  }}
+                >
+                  Next Step →
+                </button>
+              </div>
             </div>
           ) : (
             <span className="text-white text-lg font-bold">

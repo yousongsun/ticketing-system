@@ -4,7 +4,7 @@ import axios from 'axios';
 import type React from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import type { RootState } from '../redux/store';
 
 const API_BASE_URL =
@@ -12,11 +12,14 @@ const API_BASE_URL =
 
 const UserDetail: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [isStudent, setIsStudent] = useState(false);
+  const [isStudent, setIsStudent] = useState(
+    location.state?.isStudent ?? false,
+  );
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
