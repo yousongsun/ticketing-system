@@ -241,7 +241,8 @@ const HomePage: React.FC = () => {
           </svg>
         </button> */}
 
-        <div className="absolute top-[77%] left-1/2 -translate-x-1/2 text-center lg:left-[10%] lg:-translate-x-0 lg:text-left text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2 -translate-y-20 lg:translate-y-2 text-[clamp(1.5rem,3vw,2rem)]">
+        <div className="absolute top-[60%] left-1/2 -translate-x-1/2 text-center lg:left-[10%] lg:-translate-x-0 lg:text-left text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2 -translate-y-20 lg:translate-y-2 text-[clamp(1.5rem,3vw,2rem)]">
+          {' '}
           <h2>14 Aug - 16 Aug 2025</h2>
           <h2>Sky City Theatre</h2>
           <h2>Auckland</h2>
@@ -289,7 +290,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           onClick={() => {
             navigate('/buy');
           }}
@@ -318,7 +319,7 @@ const HomePage: React.FC = () => {
               fill="#FFFBE8"
             />
           </svg>
-        </Button>
+        </Button> */}
 
         <div
           ref={TextZoomRef}

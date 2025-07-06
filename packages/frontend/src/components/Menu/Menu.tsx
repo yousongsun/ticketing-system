@@ -79,14 +79,14 @@ export const Menu: React.FC = () => {
         >
           About
         </Link> */}
-        {location.pathname !== '/buy' && (
+        {/* {location.pathname !== '/buy' && (
           <Link
             to="/buy"
             className="bg-[#e5ce63] rounded-lg py-[10px] px-6 font-inter text-2xl font-normal leading-[36px] text-[#1a1a1a] no-underline transition-colors duration-300 hover:bg-[#fff0a2]"
           >
             Buy Tickets
           </Link>
-        )}
+        )} */}
       </nav>
     </header>
   );

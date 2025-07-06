@@ -1,5 +1,3 @@
-// Yellow: #E5CE63
-// Light Yellow: #FFF0A2
 // White: #FFFBE8
 // Font: Inter & Poppins
 
@@ -25,11 +23,17 @@ export const Sponsors: React.FC = () => {
         <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
           PLATINUM
         </p>
-        <img
-          src={weLogo}
-          alt="We Getting to the Guts of it"
-          className="md:h-40 h-25 object-contain mx-auto bg-white"
-        />
+        <a
+          href="https://waitemataendoscopy.co.nz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={weLogo}
+            alt="We Getting to the Guts of it"
+            className="md:h-40 h-25 object-contain mx-auto bg-white"
+          />
+        </a>
       </div>
 
       <div>
@@ -42,11 +46,17 @@ export const Sponsors: React.FC = () => {
             alt="RESPMED"
             className="md:w-30 md:h-30 w-20 h-20 object-contain bg-white"
           />
-          <img
-            src={tamakihealthLogo}
-            alt="Tamaki Health"
-            className="md:w-30 md:h-30 w-20 h-20 object-contain bg-white"
-          />
+          <a
+            href="https://www.tamakihealth.co.nz"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={tamakihealthLogo}
+              alt="Tamaki Health"
+              className="md:w-30 md:h-30 w-20 h-20 object-contain bg-white"
+            />
+          </a>
         </div>
       </div>
 
@@ -54,11 +64,17 @@ export const Sponsors: React.FC = () => {
         <p className="md:mb-5 mb-3 md:text-3xl text-2xl text-[#E5CE63] font-[Poppins]">
           SILVER
         </p>
-        <img
-          src={pizzaclubLogo}
-          alt="Pizza Club"
-          className="md:h-20 h-10 object-contain mx-auto bg-white"
-        />
+        <a
+          href="https://pizzaclub.co.nz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={pizzaclubLogo}
+            alt="Pizza Club"
+            className="md:h-20 h-10 object-contain mx-auto bg-white"
+          />
+        </a>
       </div>
 
       <div>
@@ -67,33 +83,63 @@ export const Sponsors: React.FC = () => {
         </p>
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-row justify-center items-center gap-5">
-            <img
-              src={mpsLogo}
-              alt="MPS"
-              className="md:h-20 h-10 object-contain bg-white"
-            />
-            <img
-              src={anzcaLogo}
-              alt="anzca"
-              className="md:h-20 h-10 object-contain bg-white"
-            />
-            <img
-              src={afterLogo}
-              alt="After"
-              className="md:h-20 h-10 object-contain bg-white"
-            />
-            <img
-              src={oneHealthLogo}
-              alt="One Health"
-              className="md:h-20 h-10 object-contain bg-white"
-            />
+            <a
+              href="https://www.medicalprotection.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={mpsLogo}
+                alt="MPS"
+                className="md:h-20 h-10 object-contain bg-white"
+              />
+            </a>
+            <a
+              href="https://www.anzca.edu.au"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={anzcaLogo}
+                alt="anzca"
+                className="md:h-20 h-10 object-contain bg-white"
+              />
+            </a>
+            <a
+              href="https://www.after.net.nz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={afterLogo}
+                alt="After"
+                className="md:h-20 h-10 object-contain bg-white"
+              />
+            </a>
+            <a
+              href="https://www.onehealth.co.nz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={oneHealthLogo}
+                alt="One Health"
+                className="md:h-20 h-10 object-contain bg-white"
+              />
+            </a>
           </div>
           <div className="flex flex-row justify-center items-center gap-5">
-            <img
-              src={medworldLogo}
-              alt="MedWorld Institute"
-              className="md:h-20 h-10 object-contain bg-white"
-            />
+            <a
+              href="https://institute.medworld.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={medworldLogo}
+                alt="MedWorld Institute"
+                className="md:h-20 h-10 object-contain bg-white"
+              />
+            </a>
           </div>
         </div>
       </div>
