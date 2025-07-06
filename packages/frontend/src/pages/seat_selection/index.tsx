@@ -109,10 +109,10 @@ const SeatSelectionPage: React.FC = () => {
             <h1 className="text-[#E5CE63] font-black text-xl text-right tracking-widest">
               BACK TO THE SUTURE
             </h1>
-            <p className="text-white text-sm mt-2">
-              VIP $45&nbsp;&nbsp;Normal $35&nbsp;&nbsp;Normal student $25
-            </p>
           </div>
+          <p className="text-white text-sm">
+            VIP $45&nbsp;&nbsp;Standard $35&nbsp;&nbsp;Standard student $25
+          </p>
           {/* Display list of selected seats */}
           {selectedSeats.length > 0 ? (
             <div>
