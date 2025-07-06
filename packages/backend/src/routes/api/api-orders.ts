@@ -123,6 +123,11 @@ router.post(
         return;
       }
 
+      for (const seat of selectedSeats) {
+        const lockKey = `seatlock:${selectedDate}:${seat.rowLabel}-${seat.number}`;
+        await redisClient.expire(lockKey, 30 * 60);
+      }
+
       const order = await createOrder(
         firstName,
         lastName,

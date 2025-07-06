@@ -44,8 +44,20 @@ const SeatSelectionPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Handle deselecting a seat
-  const handleDeselectSeat = (seat: SeatType) => {
-    dispatch(toggleSeatSelection(seat));
+  const handleDeselectSeat = async (seat: SeatType) => {
+    try {
+      await axios.post(
+        `${API_BASE_URL}/api/v1/seats/unselect`,
+        {
+          seatNumber: `${seat.rowLabel}${seat.number}`,
+          date: selectedDate,
+        },
+        { withCredentials: true },
+      );
+      dispatch(toggleSeatSelection(seat));
+    } catch (error) {
+      console.error('Failed to release seat:', error);
+    }
   };
 
   // Handle animation of newly selected seats
