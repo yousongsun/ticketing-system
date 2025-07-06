@@ -12,6 +12,7 @@ import { markSeatsUnavailable } from '../../data/seat-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
 import redisClient from '../../redis/redisClient';
 import { refreshSeatCache } from '../../redis/seatCache';
+import { verifySeats } from '../../utils/verifySeats';
 
 declare module 'express-session' {
   interface SessionData {
@@ -108,6 +109,18 @@ router.post(
           res.status(400).json({ error: 'Invalid seat format' });
           return;
         }
+      }
+
+      const invalidSeats = await verifySeats(
+        selectedDate,
+        selectedSeats.map((s) => ({ rowLabel: s.rowLabel, number: s.number })),
+        req.sessionID,
+      );
+      if (invalidSeats.length > 0) {
+        res
+          .status(409)
+          .json({ error: 'Seats no longer available', invalidSeats });
+        return;
       }
 
       const order = await createOrder(
@@ -252,6 +265,20 @@ router.get(
         return;
       }
       if (paymentIntentDetails.status === 'succeeded') {
+        const invalidSeats = await verifySeats(
+          order.selectedDate,
+          order.selectedSeats.map((s) => ({
+            rowLabel: s.rowLabel,
+            number: s.number,
+          })),
+          req.sessionID,
+        );
+        if (invalidSeats.length > 0) {
+          res
+            .status(409)
+            .json({ message: 'Seats no longer available', invalidSeats });
+          return;
+        }
         // Update order status to paid
         order.paid = true;
         await updateOrder(order);
