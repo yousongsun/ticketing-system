@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 
 export const Menu: React.FC = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    void location.pathname;
+    setOpen(false);
+  }, [location]);
 
   return (
     <header className="relative flex justify-between items-center h-20 w-full px-5 z-50 bg-[#1a1a1a]">

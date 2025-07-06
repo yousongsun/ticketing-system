@@ -89,7 +89,7 @@ const UserDetail: React.FC = () => {
           console.log('Order created successfully:', response.data);
           const { sessionId, orderId } = response.data;
           if (orderId) {
-            sessionStorage.setItem('orderId', orderId);
+            localStorage.setItem('orderId', orderId);
           }
           const stripe = await loadStripe(
             import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,

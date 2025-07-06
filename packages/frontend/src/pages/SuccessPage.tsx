@@ -38,7 +38,7 @@ const SuccessPage: React.FC = () => {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const orderId = sessionStorage.getItem('orderId');
+    const orderId = localStorage.getItem('orderId');
     if (!orderId) {
       setStatus('missing');
       return;
@@ -69,7 +69,7 @@ const SuccessPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const orderId = sessionStorage.getItem('orderId');
+    const orderId = localStorage.getItem('orderId');
     if (!orderId || status !== 'succeeded') return;
 
     const fetchOrder = async () => {
@@ -118,10 +118,10 @@ const SuccessPage: React.FC = () => {
           </div> */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 w-full pt-20 pb-20">
             {/* Left */}
-            <div className="w-full lg:w-1/2 space-y-6 relative pl-18">
+            <div className="w-full lg:w-1/2 space-y-6 relative md:pl-18">
               {/* Order number */}
               <p className="text-[14px] text-[#FFFBE8] opacity-80">
-                Order {sessionStorage.getItem('orderId') || 'N/A'}
+                Order #{localStorage.getItem('orderId') || 'N/A'}
               </p>
 
               {/* Icon + Heading protrude to left of alignment*/}
@@ -129,7 +129,7 @@ const SuccessPage: React.FC = () => {
                 <img
                   src={checkCircle}
                   alt="Success Icon"
-                  className="w-14 h-14 -ml-10 mr-4"
+                  className="w-14 h-14 ml-0 md:-ml-10 mr-4"
                 />
                 <h1
                   className="text-[32px] text-[#E5CE63] font-bold font-[Inter]"
@@ -191,7 +191,7 @@ const SuccessPage: React.FC = () => {
 
               {/* Order summary box */}
 
-              <div className="ml-auto w-full max-w-sm border border-[#FFFBE8] rounded-md overflow-hidden bg-[#070507]">
+              <div className="ml-auto w-full md:max-w-sm border border-[#FFFBE8] rounded-md overflow-hidden bg-[#070507]">
                 {/* Header */}
                 <div className="bg-[#070507] border-b border-[#FFFBE8] px-6 py-4">
                   <h3 className="text-[#E5CE63] text-lg font-bold text-left">
