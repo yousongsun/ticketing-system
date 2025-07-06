@@ -36,6 +36,8 @@ app.use(
   }),
 );
 
+app.set('trust proxy', 1);
+
 // Set up session management with Redis store
 app.use(
   session({
