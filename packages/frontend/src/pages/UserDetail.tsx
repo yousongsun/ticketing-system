@@ -37,17 +37,24 @@ const UserDetail: React.FC = () => {
   const selectedSeats = Object.values(seatData).flatMap((row: SeatType[]) =>
     row.filter((seat) => seat.selected),
   );
+  const [studentCount, setStudentCount] = useState(selectedSeats.length);
 
   // Calculate total price with student discount
   const vipPrice = 45;
-  const normalPrice = isStudent ? 25 : 35;
+  const standardStudentPrice = 25;
+  const standardPrice = 35;
   const vipCount = selectedSeats.filter(
     (seat) => seat.seatType === 'VIP',
   ).length;
   const normalCount = selectedSeats.filter(
     (seat) => seat.seatType === 'Standard',
   ).length;
-  const subTotal = vipCount * vipPrice + normalCount * normalPrice;
+  const studentStandardCount = Math.min(studentCount, normalCount);
+  const nonStudentStandardCount = normalCount - studentStandardCount;
+  const subTotal =
+    vipCount * vipPrice +
+    studentStandardCount * standardStudentPrice +
+    nonStudentStandardCount * standardPrice;
   const bookingFee = +(subTotal * 0.03).toFixed(2);
   const totalPrice = +(subTotal + bookingFee).toFixed(2);
 
@@ -75,6 +82,7 @@ const UserDetail: React.FC = () => {
         email,
         phone,
         isStudent,
+        studentCount,
         selectedDate,
         selectedSeats,
         totalPrice: subTotal,
@@ -220,6 +228,27 @@ const UserDetail: React.FC = () => {
                   (We'll check your student ID at the door)
                 </span>
               </label>
+              {isStudent && (
+                <label className="text-[#FFFBE8] font-semibold flex flex-col mt-2">
+                  How many students?
+                  <input
+                    type="number"
+                    name="studentCount"
+                    min={0}
+                    max={selectedSeats.length}
+                    className="w-full mt-1 p-3 rounded-lg bg-[#23202a] text-white border border-[#E5CE63]/20 focus:outline-none focus:ring-2 focus:ring-[#E5CE63]/60 transition"
+                    value={studentCount}
+                    onChange={(e) =>
+                      setStudentCount(
+                        Math.min(
+                          Math.max(Number(e.target.value), 0),
+                          selectedSeats.length,
+                        ),
+                      )
+                    }
+                  />
+                </label>
+              )}
             </div>
             <button
               type="submit"
@@ -247,17 +276,29 @@ const UserDetail: React.FC = () => {
                 <span className="font-semibold">Seats summary: </span>
                 {selectedSeats.length > 0 ? (
                   <ul className="mt-1 space-y-1">
-                    {selectedSeats.map((seat) => (
-                      <li key={`${seat.rowLabel}-${seat.number}`}>
-                        <span className="inline-block px-2 py-1 rounded bg-[#E5CE63]/10 text-[#E5CE63] font-semibold mr-2">
-                          {seat.seatType === 'VIP' ? 'VIP' : 'Standard'}
-                        </span>
-                        Row {seat.rowLabel} Seat {seat.number} -{' '}
-                        <span className="font-semibold">
-                          {seat.seatType === 'VIP' ? vipPrice : normalPrice} NZD
-                        </span>
-                      </li>
-                    ))}
+                    {(() => {
+                      let remaining = studentStandardCount;
+                      return selectedSeats.map((seat) => {
+                        let price = vipPrice;
+                        if (seat.seatType === 'Standard') {
+                          if (remaining > 0) {
+                            price = standardStudentPrice;
+                            remaining -= 1;
+                          } else {
+                            price = standardPrice;
+                          }
+                        }
+                        return (
+                          <li key={`${seat.rowLabel}-${seat.number}`}>
+                            <span className="inline-block px-2 py-1 rounded bg-[#E5CE63]/10 text-[#E5CE63] font-semibold mr-2">
+                              {seat.seatType === 'VIP' ? 'VIP' : 'Standard'}
+                            </span>
+                            Row {seat.rowLabel} Seat {seat.number} -{' '}
+                            <span className="font-semibold">{price} NZD</span>
+                          </li>
+                        );
+                      });
+                    })()}
                   </ul>
                 ) : (
                   <span className="italic text-[#E5CE63]/70">

@@ -21,6 +21,7 @@ async function createOrder(
   email: string,
   phone: string,
   isStudent: boolean,
+  studentCount: number,
   selectedDate: string,
   selectedSeats: {
     rowLabel: string;
@@ -31,12 +32,28 @@ async function createOrder(
 ) {
   try {
     const vipPrice = 45;
-    const normalPrice = isStudent ? 25 : 35;
-    const lineItems = selectedSeats.map((seat) => ({
-      name: `MedRevue Ticket (${seat.seatType}) - Row ${seat.rowLabel} Seat ${seat.number}`,
-      price: seat.seatType === 'VIP' ? vipPrice : normalPrice,
-      quantity: 1,
-    }));
+    const standardStudentPrice = 25;
+    const standardPrice = 35;
+    let remainingStudent = Math.min(
+      studentCount,
+      selectedSeats.filter((s) => s.seatType === 'Standard').length,
+    );
+    const lineItems = selectedSeats.map((seat) => {
+      let price = vipPrice;
+      if (seat.seatType === 'Standard') {
+        if (remainingStudent > 0) {
+          price = standardStudentPrice;
+          remainingStudent -= 1;
+        } else {
+          price = standardPrice;
+        }
+      }
+      return {
+        name: `MedRevue Ticket (${seat.seatType}) - Row ${seat.rowLabel} Seat ${seat.number}`,
+        price,
+        quantity: 1,
+      };
+    });
 
     // Calculate booking fee as 3% of the ticket subtotal
     const bookingFee = +(totalPrice * 0.03).toFixed(2);
@@ -80,6 +97,7 @@ async function createOrder(
       email,
       phone,
       isStudent,
+      studentCount,
       selectedDate,
       selectedSeats,
       totalPrice: totalPriceWithFee,
@@ -115,6 +133,7 @@ async function updateOrder(order: IOrder): Promise<boolean> {
         email: order.email,
         phone: order.phone,
         isStudent: order.isStudent,
+        studentCount: order.studentCount,
         selectedDate: order.selectedDate,
         selectedSeats: order.selectedSeats,
         totalPrice: order.totalPrice,
