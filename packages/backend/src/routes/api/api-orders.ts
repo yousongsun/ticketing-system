@@ -250,8 +250,13 @@ router.get(
     }
     const order = await retrieveOrderById(id);
 
+    if (!order) {
+      res.status(404).json({ message: 'Order not found' });
+      return;
+    }
+
     try {
-      const sessionId = order?.checkoutSessionId;
+      const sessionId = order.checkoutSessionId;
       if (!sessionId) {
         res.status(400).json({ message: 'Session ID is required' });
         return;
@@ -276,7 +281,7 @@ router.get(
         res.status(404).json({ message: 'Payment intent details not found' });
         return;
       }
-      if (paymentIntentDetails.status === 'succeeded') {
+      if (paymentIntentDetails.status === 'succeeded' && !order.paid) {
         const invalidSeats = await verifySeats(
           order.selectedDate,
           order.selectedSeats.map((s) => ({
@@ -307,6 +312,53 @@ router.get(
         }
         await redisClient.del(`seats:${order.selectedDate}`);
         await refreshSeatCache(order.selectedDate);
+
+        // Send confirmation email
+        const brevoApiKey = process.env.BREVO_API_KEY;
+        if (brevoApiKey) {
+          const orderId = (
+            order._id as string | { toString(): string }
+          ).toString();
+          const seats = order.selectedSeats
+            .map((s) => `${s.rowLabel}${s.number}`)
+            .join(', ');
+          const totalPrice = new Intl.NumberFormat('en-NZ', {
+            style: 'currency',
+            currency: 'NZD',
+          }).format(order.totalPrice);
+
+          const emailPayload = {
+            sender: {
+              name: 'Auckland Medical Revue',
+              email: 'aucklandmedicalrevue@gmail.com',
+            },
+            to: [
+              {
+                email: order.email,
+                name: `${order.firstName} ${order.lastName}`,
+              },
+            ],
+            subject: `MedRevue Ticket Confirmation - Order #${orderId}`,
+            htmlContent: `<!DOCTYPE html><html><body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;"><div style="max-width: 600px; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"><h2 style="color: #E5CE63;">Thank you for your purchase!</h2><p><strong>Order Number:</strong> #${orderId}</p><p><strong>Show Date:</strong> ${order.selectedDate}</p><p><strong>Seats:</strong> ${seats}</p><p><strong>Total Paid:</strong> ${totalPrice}</p><hr style="margin: 20px 0;"/><p>If you have any questions, please contact us at <a href="mailto:aucklandmedicalrevue@gmail.com">aucklandmedicalrevue@gmail.com</a>.</p></div></body></html>`,
+          };
+
+          try {
+            await fetch('https://api.brevo.com/v3/smtp/email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'api-key': brevoApiKey,
+              },
+              body: JSON.stringify(emailPayload),
+            });
+          } catch (emailError) {
+            console.error('Failed to send confirmation email:', emailError);
+            // Decide if you want to let the user know the email failed.
+            // The payment was successful, so this is a secondary failure.
+          }
+        } else {
+          console.warn('BREVO_API_KEY not set. Skipping email notification.');
+        }
       }
       res.status(200).json({ paymentStatus: paymentIntentDetails.status });
     } catch (error: unknown) {
