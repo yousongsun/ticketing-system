@@ -4,7 +4,7 @@ import type React from 'react';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import medrevueHomeBackground from '../assets/medrevue-home-background.png';
-import medrevuePoster from '../assets/medrevue-poster.png';
+import medrevuePoster from '../assets/medrevue-poster.jpg';
 import { Button } from '../components/Button';
 gsap.registerPlugin(ScrollTrigger);
 
@@ -241,7 +241,7 @@ const HomePage: React.FC = () => {
           </svg>
         </button> */}
 
-        <div className="absolute top-[60%] left-1/2 -translate-x-1/2 text-center lg:left-[10%] lg:-translate-x-0 lg:text-left text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2 -translate-y-20 lg:translate-y-2 text-[clamp(1.5rem,3vw,2rem)]">
+        <div className="absolute top-[66%] md:top-[60%] left-1/2 -translate-x-1/2 text-center lg:left-[10%] lg:-translate-x-0 lg:text-left text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2 -translate-y-20 lg:translate-y-2 text-[clamp(1.5rem,3vw,2rem)]">
           {' '}
           <h2>14 Aug - 16 Aug 2025</h2>
           <h2>Sky City Theatre</h2>
@@ -252,13 +252,13 @@ const HomePage: React.FC = () => {
       {/* Second Section */}
       <section
         ref={secondSectionRef}
-        className="relative h-screen bg-[#070507] flex h-[200vh] sm:h-screen overflow-y-auto sm:overflow-hidden"
+        className="relative h-screen bg-[#070507] flex sm:h-screen overflow-y-auto "
       >
         <img
           ref={posterRef}
           src={medrevuePoster}
           alt="2025 MedRevue Poster - Back To The Suture"
-          className="absolute top-[37%] left-[5%] w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40"
+          className="absolute top-[37%] left-[30%] md:left-[5%] w-[250px] md:w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40 lg:block"
         />
 
         <div className="absolute right-[10%] top-[7%] text-right lg:translate-y-22">
@@ -271,7 +271,7 @@ const HomePage: React.FC = () => {
 
           <h1
             ref={textRef}
-            className="text-[#E5CE63] font-poppins font-bold text-[3.75rem] text-[clamp(2.1rem,8vw,3.75rem)]"
+            className="text-[#E5CE63] font-poppins font-bold text-4xl md:text-[3.75rem]"
           >
             BACK TO THE SUTURE
           </h1>
@@ -285,10 +285,8 @@ const HomePage: React.FC = () => {
           >
             <p>
               Back to the Suture is a musical comedy inspired by the classic
-              film Back to the Future, but with a medical twist.
-            </p>
-            <p className="max-w-xs mx-auto space-y-4 lg:max-w-[425px] lg:mx-0">
-              Profits go towards Médecins Sans Frontières (MSF).
+              film Back to the Future, but with a medical twist. Profits go
+              towards Médecins Sans Frontières (MSF).
             </p>
           </div>
         </div>
@@ -326,7 +324,7 @@ const HomePage: React.FC = () => {
 
         <div
           ref={TextZoomRef}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#FFFBE8] transform font-inter font-semibold text-center flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 lg:flex-row lg:space-y-0 lg:space-x-15 lg:bottom-auto lg:top-[85%] text-[clamp(1.125rem,4vw,1.875rem)]"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#FFFBE8] transform font-inter font-semibold text-center flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 lg:flex-row lg:space-y-0 lg:space-x-15 lg:bottom-auto lg:top-[85%] text-xl md:text-[clamp(1.125rem,4vw,1.875rem)]"
         >
           <h2>
             {' '}

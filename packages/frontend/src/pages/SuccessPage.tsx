@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type React from 'react';
-import medrevuePoster from '../assets/medrevue-poster.png';
+import medrevuePoster from '../assets/medrevue-poster.jpg';
 
 import type { OrderType } from '@medrevue/types';
 import { useEffect, useRef, useState } from 'react';

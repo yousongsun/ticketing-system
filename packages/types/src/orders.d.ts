@@ -4,6 +4,7 @@ export interface OrderType {
   email: string;
   phone: string;
   isStudent: boolean;
+  studentCount: number;
   selectedDate: string;
   selectedSeats: {
     rowLabel: string;

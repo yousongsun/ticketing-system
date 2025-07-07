@@ -10,6 +10,7 @@ const orderSchema: Schema<IOrder> = new Schema(
     email: { type: String, required: true },
     phone: { type: String, required: true },
     isStudent: { type: Boolean, required: true },
+    studentCount: { type: Number, required: true },
     selectedDate: { type: String, required: true },
     selectedSeats: [
       {

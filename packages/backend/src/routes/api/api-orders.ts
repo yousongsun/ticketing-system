@@ -39,6 +39,7 @@ interface CreateOrderRequest extends Request {
     email: string;
     phone: string;
     isStudent: boolean;
+    studentCount: number;
     selectedDate: string;
     selectedSeats: {
       rowLabel: string;
@@ -63,6 +64,7 @@ router.post(
         selectedDate,
         selectedSeats,
         totalPrice,
+        studentCount,
       } = req.body;
 
       // Validate required fields
@@ -84,6 +86,10 @@ router.post(
       }
       if (typeof isStudent !== 'boolean') {
         res.status(400).json({ error: 'Missing isStudent' });
+        return;
+      }
+      if (typeof studentCount !== 'number') {
+        res.status(400).json({ error: 'Missing student count' });
         return;
       }
       if (!selectedDate) {
@@ -134,6 +140,7 @@ router.post(
         email,
         phone,
         isStudent,
+        studentCount,
         selectedDate,
         selectedSeats,
         totalPrice,

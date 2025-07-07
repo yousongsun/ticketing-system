@@ -11,6 +11,7 @@ import { SponsorPage } from './pages/SponsorPage';
 import SuccessPage from './pages/SuccessPage';
 import UserDetail from './pages/UserDetail';
 import SeatSelectionPage from './pages/seat_selection';
+import Show2025 from './pages/show/2025show';
 
 const App: React.FC = () => {
   return (
@@ -30,7 +31,8 @@ const App: React.FC = () => {
           element={
             <>
               <Menu />
-              <LoadingComponent />
+              {/* <LoadingComponent /> */}
+              <Show2025 />
             </>
           }
         />
