@@ -291,7 +291,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           onClick={() => {
             navigate('/buy');
           }}
@@ -320,7 +320,7 @@ const HomePage: React.FC = () => {
               fill="#FFFBE8"
             />
           </svg>
-        </Button>
+        </Button> */}
 
         <div
           ref={TextZoomRef}

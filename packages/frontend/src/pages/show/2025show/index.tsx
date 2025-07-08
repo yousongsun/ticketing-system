@@ -5,7 +5,7 @@ const Show2025: React.FC = () => {
   return (
     <div className="m-0 p-0 bg-black">
       <div className="flex justify-center items-center">
-        <a href="/buy" className="no-underline" aria-label="Buy tickets">
+        <a href="/show" className="no-underline" aria-label="Buy tickets">
           <img
             src={Show2025Poster}
             alt="2025 Show"
