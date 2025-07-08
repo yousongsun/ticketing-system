@@ -111,7 +111,7 @@ const SeatSelectionPage: React.FC = () => {
           </TransformWrapper>
         </div>
         {/* Selected Seat View */}
-        <div className="w-full md:w-[40%] md:h-[90%] h-1/2 flex bg-[#070507] rounded-xl p-4 flex-col gap-y-4">
+        <div className="w-full md:w-[40%] md:h-[90%] h-1/2 flex bg-[#070507] rounded-xl p-4 flex-col gap-y-4 overflow-y-auto">
           {/* Page Headings */}
           <div>
             <h2 className="text-[#FFF0A2] font-bold text-md text-right tracking-wide">

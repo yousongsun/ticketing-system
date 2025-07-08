@@ -258,7 +258,7 @@ const HomePage: React.FC = () => {
           ref={posterRef}
           src={medrevuePoster}
           alt="2025 MedRevue Poster - Back To The Suture"
-          className="absolute top-[37%] left-[30%] md:left-[5%] w-[250px] md:w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40 lg:block"
+          className="absolute top-[40%] md:top-[37%] left-[20%] md:left-[5%] w-[180px] md:w-[170px] h-auto lg:w-[350px] lg:translate-x-20 lg:-translate-y-40 lg:block"
         />
 
         <div className="absolute right-[10%] top-[7%] text-right lg:translate-y-22">
@@ -291,7 +291,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* <Button
+        <Button
           onClick={() => {
             navigate('/buy');
           }}
@@ -320,7 +320,7 @@ const HomePage: React.FC = () => {
               fill="#FFFBE8"
             />
           </svg>
-        </Button> */}
+        </Button>
 
         <div
           ref={TextZoomRef}
