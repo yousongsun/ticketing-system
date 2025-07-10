@@ -14,6 +14,7 @@ import { markSeatsUnavailable } from '../../data/seat-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
 import redisClient from '../../redis/redisClient';
 import { refreshSeatCache } from '../../redis/seatCache';
+import { scheduleStatusChecks } from '../../utils/scheduleStatusChecks';
 import { verifySeats } from '../../utils/verifySeats';
 
 declare module 'express-session' {
@@ -156,6 +157,8 @@ router.post(
       req.session.orderId = (
         order._id as string | { toString(): string }
       ).toString();
+
+      scheduleStatusChecks(req.session.orderId);
 
       res.status(201).json({
         sessionId: order.checkoutSessionId,
