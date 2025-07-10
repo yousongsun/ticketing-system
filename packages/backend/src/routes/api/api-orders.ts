@@ -1,6 +1,4 @@
-import crypto from 'node:crypto';
 import express, { type Request, type Response } from 'express';
-import QRCode from 'qrcode';
 import Stripe from 'stripe';
 import {
   createOrder,
@@ -14,6 +12,7 @@ import { markSeatsUnavailable } from '../../data/seat-dao';
 import { verifyInternalRequest } from '../../middleware/verify-internal-request';
 import redisClient from '../../redis/redisClient';
 import { refreshSeatCache } from '../../redis/seatCache';
+import { sendConfirmationEmail } from '../../utils/sendConfirmationEmail';
 import { verifySeats } from '../../utils/verifySeats';
 
 declare module 'express-session' {
@@ -316,69 +315,7 @@ router.get(
         await refreshSeatCache(order.selectedDate);
 
         // Send confirmation email
-        const brevoApiKey = process.env.BREVO_API_KEY;
-        if (brevoApiKey) {
-          const orderId = (
-            order._id as string | { toString(): string }
-          ).toString();
-          const qrCodeSecret = process.env.QRCODE_SECRET;
-          if (!qrCodeSecret) {
-            console.error(
-              'QRCODE_SECRET is not set. Cannot generate secure QR code.',
-            );
-            // Fallback or error handling here. For now, we'll skip QR generation.
-            res.status(500).json({
-              message: 'Server configuration error for QR code generation.',
-            });
-            return;
-          }
-
-          const hmac = crypto.createHmac('sha256', qrCodeSecret);
-          hmac.update(orderId);
-          const signature = hmac.digest('hex');
-          const qrPayload = `${orderId}.${signature}`;
-
-          const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
-          const seats = order.selectedSeats
-            .map((s) => `${s.rowLabel}${s.number}`)
-            .join(', ');
-          const totalPrice = new Intl.NumberFormat('en-NZ', {
-            style: 'currency',
-            currency: 'NZD',
-          }).format(order.totalPrice);
-
-          const emailPayload = {
-            sender: {
-              name: 'Auckland Medical Revue',
-              email: 'aucklandmedicalrevue@gmail.com',
-            },
-            to: [
-              {
-                email: order.email,
-                name: `${order.firstName} ${order.lastName}`,
-              },
-            ],
-            subject: `MedRevue Ticket Confirmation - Order #${orderId}`,
-            htmlContent: `<!DOCTYPE html><html><body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;"><div style="max-width: 600px; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"><h2 style="color: #E5CE63;">Thank you for your purchase!</h2><p><strong>Order Number:</strong> #${orderId}</p><p><strong>Show Date:</strong> ${order.selectedDate} 7:30 PM - 10:00 PM (doors will open at 6:45 PM)</p><p><strong>Location:</strong> SkyCity Theatre</p><p><strong>Seats:</strong> ${seats}</p><p><strong>Total Paid:</strong> ${totalPrice}</p><p><strong>Ticket QR Code:</strong></p><div style="margin-top: 20px; text-align: center;"><img src="${qrCodeDataUrl}" alt="Ticket QR Code" style="width: 250px; height: 250px;"/></div><hr style="margin: 20px 0;"/><p>If you have any questions, please contact us at <a href="mailto:aucklandmedicalrevue@gmail.com">aucklandmedicalrevue@gmail.com</a>.</p></div></body></html>`,
-          };
-
-          try {
-            await fetch('https://api.brevo.com/v3/smtp/email', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'api-key': brevoApiKey,
-              },
-              body: JSON.stringify(emailPayload),
-            });
-          } catch (emailError) {
-            console.error('Failed to send confirmation email:', emailError);
-            // Decide if you want to let the user know the email failed.
-            // The payment was successful, so this is a secondary failure.
-          }
-        } else {
-          console.warn('BREVO_API_KEY not set. Skipping email notification.');
-        }
+        await sendConfirmationEmail(order);
       }
       res.status(200).json({ paymentStatus: paymentIntentDetails.status });
     } catch (error: unknown) {
@@ -395,6 +332,30 @@ router.get(
       }
       res.status(500).json({ message: 'Failed to retrieve payment status' });
     }
+  },
+);
+
+// Manually trigger a confirmation email resend
+router.post(
+  '/:id/send-email',
+  verifyInternalRequest,
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ error: 'Missing the order ID' });
+      return;
+    }
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+      res.status(404).json({ message: 'Order not found' });
+      return;
+    }
+    const order = await retrieveOrderById(id);
+    if (!order) {
+      res.status(404).json({ message: 'Order not found' });
+      return;
+    }
+    await sendConfirmationEmail(order);
+    res.sendStatus(204);
   },
 );
 
