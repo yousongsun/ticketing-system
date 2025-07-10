@@ -10,7 +10,16 @@ export function scheduleStatusChecks(orderId: string): void {
     }
   };
 
-  for (const minutes of [10, 20, 30, 40, 50]) {
-    setTimeout(checkStatus, minutes * 60 * 1000);
-  }
+  let checks = 0;
+  const maxChecks = 5;
+  const interval = setInterval(
+    async () => {
+      checks += 1;
+      await checkStatus();
+      if (checks >= maxChecks) {
+        clearInterval(interval);
+      }
+    },
+    10 * 60 * 1000,
+  );
 }
