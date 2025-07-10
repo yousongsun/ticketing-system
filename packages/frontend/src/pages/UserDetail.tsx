@@ -37,7 +37,7 @@ const UserDetail: React.FC = () => {
   const selectedSeats = Object.values(seatData).flatMap((row: SeatType[]) =>
     row.filter((seat) => seat.selected),
   );
-  const [studentCount, setStudentCount] = useState(selectedSeats.length);
+  const [studentCount, setStudentCount] = useState(0);
 
   // Calculate total price with student discount
   const vipPrice = 45;
@@ -230,7 +230,7 @@ const UserDetail: React.FC = () => {
               </label>
               {isStudent && (
                 <label className="text-[#FFFBE8] font-semibold flex flex-col mt-2">
-                  How many students?
+                  Number of student tickets?
                   <input
                     type="number"
                     name="studentCount"

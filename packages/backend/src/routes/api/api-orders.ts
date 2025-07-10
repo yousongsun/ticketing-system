@@ -1,4 +1,6 @@
+import crypto from 'node:crypto';
 import express, { type Request, type Response } from 'express';
+import QRCode from 'qrcode';
 import Stripe from 'stripe';
 import {
   createOrder,
@@ -319,6 +321,24 @@ router.get(
           const orderId = (
             order._id as string | { toString(): string }
           ).toString();
+          const qrCodeSecret = process.env.QRCODE_SECRET;
+          if (!qrCodeSecret) {
+            console.error(
+              'QRCODE_SECRET is not set. Cannot generate secure QR code.',
+            );
+            // Fallback or error handling here. For now, we'll skip QR generation.
+            res.status(500).json({
+              message: 'Server configuration error for QR code generation.',
+            });
+            return;
+          }
+
+          const hmac = crypto.createHmac('sha256', qrCodeSecret);
+          hmac.update(orderId);
+          const signature = hmac.digest('hex');
+          const qrPayload = `${orderId}.${signature}`;
+
+          const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
           const seats = order.selectedSeats
             .map((s) => `${s.rowLabel}${s.number}`)
             .join(', ');
@@ -339,7 +359,7 @@ router.get(
               },
             ],
             subject: `MedRevue Ticket Confirmation - Order #${orderId}`,
-            htmlContent: `<!DOCTYPE html><html><body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;"><div style="max-width: 600px; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"><h2 style="color: #E5CE63;">Thank you for your purchase!</h2><p><strong>Order Number:</strong> #${orderId}</p><p><strong>Show Date:</strong> ${order.selectedDate} 7:30 PM - 10:00 PM (doors will open at 6:45 PM)</p><p><strong>Location:</strong> SkyCity Theatre</p><p><strong>Seats:</strong> ${seats}</p><p><strong>Total Paid:</strong> ${totalPrice}</p><hr style="margin: 20px 0;"/><p>If you have any questions, please contact us at <a href="mailto:aucklandmedicalrevue@gmail.com">aucklandmedicalrevue@gmail.com</a>.</p></div></body></html>`,
+            htmlContent: `<!DOCTYPE html><html><body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;"><div style="max-width: 600px; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"><h2 style="color: #E5CE63;">Thank you for your purchase!</h2><p><strong>Order Number:</strong> #${orderId}</p><p><strong>Show Date:</strong> ${order.selectedDate} 7:30 PM - 10:00 PM (doors will open at 6:45 PM)</p><p><strong>Location:</strong> SkyCity Theatre</p><p><strong>Seats:</strong> ${seats}</p><p><strong>Total Paid:</strong> ${totalPrice}</p><p><strong>Ticket QR Code:</strong></p><div style="margin-top: 20px; text-align: center;"><img src="${qrCodeDataUrl}" alt="Ticket QR Code" style="width: 250px; height: 250px;"/></div><hr style="margin: 20px 0;"/><p>If you have any questions, please contact us at <a href="mailto:aucklandmedicalrevue@gmail.com">aucklandmedicalrevue@gmail.com</a>.</p></div></body></html>`,
           };
 
           try {
