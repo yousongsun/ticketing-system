@@ -289,6 +289,16 @@ const HomePage: React.FC = () => {
               towards Médecins Sans Frontières (MSF).
             </p>
           </div>
+
+          <div
+            ref={divFadeInRef}
+            className="text-[#FFFBE8] font-inter font-light text-xl space-y-2 max-w-[425px] lg:ml-auto text-right flex flex-col gap-10 lg:gap-15 pt-8"
+          >
+            <p>
+              This show contains content intended for mature audiences. Viewer
+              discretion is advised.
+            </p>
+          </div>
         </div>
 
         <Button
