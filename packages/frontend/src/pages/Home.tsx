@@ -244,7 +244,7 @@ const HomePage: React.FC = () => {
         <div className="absolute top-[66%] md:top-[60%] left-1/2 -translate-x-1/2 text-center lg:left-[10%] lg:-translate-x-0 lg:text-left text-[#FFFBE8] font-inter font-semibold text-3xl space-y-2 -translate-y-20 lg:translate-y-2 text-[clamp(1.5rem,3vw,2rem)]">
           {' '}
           <h2>14 Aug - 16 Aug 2025</h2>
-          <h2>Sky City Theatre</h2>
+          <h2>SkyCity Theatre</h2>
           <h2>Auckland</h2>
         </div>
       </section>
@@ -340,7 +340,7 @@ const HomePage: React.FC = () => {
             14 - 16 Aug, 7:30pm - 10:00 pm <br /> (doors will open at 6:45pm)
           </h2>
 
-          <h2> Sky City Theatre </h2>
+          <h2> SkyCity Theatre </h2>
         </div>
       </section>
     </div>
