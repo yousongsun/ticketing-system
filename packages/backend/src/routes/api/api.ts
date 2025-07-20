@@ -19,6 +19,10 @@ router.use('/seats', seatRoutes);
 import ordersRoutes from './api-orders';
 router.use('/orders', ordersRoutes);
 
+// Import qr code route
+import qrCodeRoutes from './api-qrcode';
+router.use('/qrcode', qrCodeRoutes);
+
 // Import payment route
 import stripeRoutes from './api-stripe';
 router.use('/stripe', stripeRoutes);
