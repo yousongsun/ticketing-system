@@ -149,6 +149,36 @@ async function updateOrder(order: IOrder): Promise<boolean> {
   }
 }
 
+async function getOrderStatistics() {
+  const result = await Order.aggregate([
+    { $match: { paid: true } },
+    { $project: { seatsCount: { $size: '$selectedSeats' }, totalPrice: 1 } },
+    {
+      $group: {
+        _id: null,
+        totalSoldPrice: { $sum: '$totalPrice' },
+        totalOrders: { $sum: 1 },
+        totalSeatsOrdered: { $sum: '$seatsCount' },
+      },
+    },
+  ]).exec();
+
+  if (result.length === 0) {
+    return { totalSoldPrice: 0, totalOrders: 0, totalSeatsOrdered: 0 };
+  }
+
+  const stats = result[0] as {
+    totalSoldPrice: number;
+    totalOrders: number;
+    totalSeatsOrdered: number;
+  };
+  return {
+    totalSoldPrice: stats.totalSoldPrice,
+    totalOrders: stats.totalOrders,
+    totalSeatsOrdered: stats.totalSeatsOrdered,
+  };
+}
+
 async function deleteOrder(id: string): Promise<boolean> {
   try {
     const result = await Order.deleteOne({ _id: id }).exec();
@@ -166,4 +196,5 @@ export {
   retrieveOrderById,
   updateOrder,
   deleteOrder,
+  getOrderStatistics,
 };

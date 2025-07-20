@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import {
   createOrder,
   deleteOrder,
+  getOrderStatistics,
   retrieveOrderByEmail,
   retrieveOrderById,
   retrieveOrderList,
@@ -182,6 +183,21 @@ router.get(
     } catch (error) {
       res.status(500).json({
         error: 'Unable to retrieve orders from database',
+      });
+    }
+  },
+);
+
+router.get(
+  '/stats',
+  verifyInternalRequest,
+  async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const stats = await getOrderStatistics();
+      res.status(200).json(stats);
+    } catch (error) {
+      res.status(500).json({
+        error: 'Unable to calculate order statistics',
       });
     }
   },
